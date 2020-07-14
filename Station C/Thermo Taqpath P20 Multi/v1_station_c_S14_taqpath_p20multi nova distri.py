@@ -11,7 +11,7 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 8  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
+NUM_SAMPLES = 94  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
 SAMPLE_VOL = 10
 PREPARE_MASTERMIX = True
 TIP_TRACK = False
@@ -33,12 +33,12 @@ def run(ctx: protocol_api.ProtocolContext):
     pcr_plate = tempdeck.load_labware(
         'opentrons_96_aluminumblock_nest_wellplate_100ul', 'PCR plate')
     mm_strips = ctx.load_labware(
-        'opentrons_96_aluminumblock_generic_pcr_strip_200ul', '7',
+        'opentrons_96_aluminumblock_nest_wellplate_100ul', '7',
         'mastermix strips')
     tempdeck.set_temperature(4)
     tube_block = ctx.load_labware(
-        'opentrons_24_aluminumblock_nest_2ml_screwcap', '5',
-        '2ml screw tube aluminum block for mastermix + controls')
+        'opentrons_24_aluminumblock_nest_1.5ml_snapcap', '5',
+        '1.5ml snapcap tube aluminum block for mastermix + controls')
 
     # pipette
     m20 = ctx.load_instrument('p20_multi_gen2', 'right', tip_racks=tips20)
@@ -141,12 +141,15 @@ resuming.')
         p300.touch_tip()
 
     # transfer mastermix to strips
-    vol_per_strip_well = num_cols*mm_dict['volume']*((vol_overage-1)/2+1)
     mm_strip = mm_strips.columns()[0]
     if not p300.hw_pipette['has_tip']:
         pick_up(p300)
-    for well in mm_strip:
-        p300.transfer(vol_per_strip_well, mm_tube, well, new_tip='never')
+    for i, well in enumerate(mm_strip):
+        if NUM_SAMPLES % 8 == 0 or i < NUM_SAMPLES % 8:
+            vol = num_cols*mm_dict['volume']*((vol_overage-1)/2+1)
+        else:
+            vol = (num_cols-1)*mm_dict['volume']*((vol_overage-1)/2+1)
+        p300.transfer(vol, mm_tube, well, new_tip='never')
     p300.drop_tip()
 
     # transfer mastermix to plate
