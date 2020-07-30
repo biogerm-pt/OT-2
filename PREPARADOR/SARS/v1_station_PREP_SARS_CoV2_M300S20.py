@@ -12,7 +12,8 @@ metadata = {
 }
 
 NUM_SAMPLES = 10
-SAMPLE_VOLUME = 100
+BB_VOLUME = 412,5
+ICPK_VOlUME = 15
 TIP_TRACK = False
 
 
@@ -20,7 +21,7 @@ def run(ctx: protocol_api.ProtocolContext):
 
     # load labware
     ic_pk = ctx.load_labware(
-        'opentrons_96_aluminumblock_generic_pcr_strip_200ul', '9',
+        'opentrons_96_aluminumblock_nest_wellplate_100ul', '9',
         'chilled tubeblock for internal control and proteinase K (strip 1)').wells()[0]
 
     bb = ctx.load_labware(
@@ -58,7 +59,7 @@ def run(ctx: protocol_api.ProtocolContext):
  # transfer internal control + proteinase K
     for d in dests_multi:
         pick_up(m20)
-        m20.transfer(15, ic_pk.bottom(2), d.bottom(10), air_gap=5,
+        m20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(10), air_gap=5,
                      new_tip='never')
         m20.air_gap(5)
         m20.drop_tip()    
@@ -66,10 +67,10 @@ def run(ctx: protocol_api.ProtocolContext):
     # transfer binding buffer
     for d in dests_multi:
         pick_up(m20)
-        m20.transfer(15, sources.bottom(2), d.bottom(10), air_gap=5,
+        m300.transfer(BB_VOLUME, sources.bottom(2), d.bottom(10), air_gap=5,
                      new_tip='never')
-        m20.air_gap(5)
-        m20.drop_tip()    
+        m300.air_gap(5)
+        m300.drop_tip()    
 
   
 
