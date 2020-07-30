@@ -41,32 +41,32 @@ def run(ctx: protocol_api.ProtocolContext):
     # load pipette
 
     m300 = ctx.load_instrument('p300_multi_gen2', 'left', tip_racks=tips300)
-    m20 = ctx.load_instrument('p20_multi_gen2', 'right', tip_racks=tips20)
+    s20 = ctx.load_instrument('p20_single_gen2', 'right', tip_racks=tips20)
   
     m300.flow_rate.aspirate = 50
     m300.flow_rate.dispense = 150
     m300.flow_rate.blow_out = 300
 
-    m20.flow_rate.aspirate = 50
-    m20.flow_rate.dispense = 100
-    m20.flow_rate.blow_out = 300
+    p20.flow_rate.aspirate = 50
+    s20.flow_rate.dispense = 100
+    s20.flow_rate.blow_out = 300
 
     # setup samples
     num_cols = math.ceil(NUM_SAMPLES/8)
     sources = bb.wells()[:2]
-    dests_multi = dest_plate.rows()[0][:num_cols]
+    dests_single = dest.wells()[:NUM_SAMPLES]
 
  # transfer internal control + proteinase K
-    for d in dests_multi:
-        pick_up(m20)
-        m20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(10), air_gap=5,
+    for d in dests_single:
+        pick_up(s20)
+        s20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(10), air_gap=5,
                      new_tip='never')
-        m20.air_gap(5)
-        m20.drop_tip()    
+        s20.air_gap(5)
+        s20.drop_tip()    
 
     # transfer binding buffer
-    for d in dests_multi:
-        pick_up(m20)
+    for d in dests_single:
+        pick_up(s20)
         m300.transfer(BB_VOLUME, sources.bottom(2), d.bottom(10), air_gap=5,
                      new_tip='never')
         m300.air_gap(5)
