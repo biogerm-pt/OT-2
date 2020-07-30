@@ -21,7 +21,7 @@ def run(ctx: protocol_api.ProtocolContext):
 
     # load labware
     ic_pk = ctx.load_labware(
-        'opentrons_24_aluminumblock_nest_2ml_snapcap', '9'
+        'opentrons_24_aluminumblock_nest_2ml_snapcap', '9', 
         'chilled tubeblock for internal control and proteinase K (strip 1)').wells()[0]
 
     bb = ctx.load_labware(
@@ -33,9 +33,9 @@ def run(ctx: protocol_api.ProtocolContext):
 
     # load tips
 
-    tips300 = [ctx.load_labware('opentrons_96_filtertiprack_200ul', '5',
+    tips300 = [ctx.load_labware('opentrons_96_tiprack_300ul', '5',
                                     '200µl filter tiprack')]
-    tips20 = [ctx.load_labware('opentrons_96_filtertiprack_20ul', '6',
+    tips20 = [ctx.load_labware('opentrons_96_tiprack_20ul', '6',
                                     '20µl filter tiprack')]
 
     # load pipette
@@ -66,7 +66,7 @@ def run(ctx: protocol_api.ProtocolContext):
             with open(tip_file_path) as json_file:
                 data = json.load(json_file)
                 if 'tips1000' in data:
-                    tip_log['count'][m300] = data['tips1000']
+                    tip_log['count'][m300] = data['tips300']
                 else:
                     tip_log['count'][m300] = 0
                 if 'tips20' in data:
@@ -117,8 +117,8 @@ def run(ctx: protocol_api.ProtocolContext):
         # transfer binding buffer
     pick_up(m300)
     for i, e in enumerate(dests_multi):
-        m300.dispense(m300.current_volume, bbs[i//6].top())
-        m300.transfer(BB_VOLUME, bbs[i//6].bottom(2), e.bottom(10), air_gap=5, mix_after=(5, 100), new_tip='never')
+        m300.dispense(m300.current_volume, bbs[i//3].top())
+        m300.transfer(BB_VOLUME, bbs[i//3].bottom(2), e.bottom(10), air_gap=5, mix_before=(5, 275), mix_after=(5, 100), new_tip='never')
         m300.air_gap(100)
     m300.drop_tip()
 

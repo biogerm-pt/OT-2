@@ -100,14 +100,14 @@ def run(ctx: protocol_api.ProtocolContext):
         pick_up(s20)
         s20.transfer(ICPK_VOLUME, ic_pk.bottom(2), d.bottom(2), air_gap=5, new_tip='never')
         s20.air_gap(5)
-        s20.drop_tip()    
+    s20.drop_tip()    
 
         # transfer binding buffer
     for b, e in zip(bbs, dests_multi):
         pick_up(m300)
         m300.transfer(BB_VOLUME, b.bottom(2), e.bottom(10), air_gap=5, mix_after=(5, 100), new_tip='never')
         m300.air_gap(100)
-        m300.drop_tip()    
+    m300.drop_tip()    
 
   
 
