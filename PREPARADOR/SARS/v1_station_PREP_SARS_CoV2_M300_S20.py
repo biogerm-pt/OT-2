@@ -51,12 +51,36 @@ def run(ctx: protocol_api.ProtocolContext):
     s20.flow_rate.dispense = 100
     s20.flow_rate.blow_out = 300
 
+    tip_log = {'count': {}}
+    folder_path = '/data/A'
+    tip_file_path = folder_path + '/tip_log.json'
+    if TIP_TRACK and not ctx.is_simulating():
+        if os.path.isfile(tip_file_path):
+            with open(tip_file_path) as json_file:
+                data = json.load(json_file)
+                if 'tips1000' in data:
+                    tip_log['count'][p1000] = data['tips1000']
+                else:
+                    tip_log['count'][p1000] = 0
+                if 'tips20' in data:
+                    tip_log['count'][m20] = data['tips20']
+                else:
+                    tip_log['count'][m20] = 0
+    else:
+        tip_log['count'] = {p1000: 0, m20: 0}
 
-def pick_up(pip):
+    tip_log['tips'] = {
+        p1000: [tip for rack in tipracks1000 for tip in rack.wells()],
+        m20: [tip for rack in tipracks20 for tip in rack.rows()[0]]
+    }
+    tip_log['max'] = {
+        pip: len(tip_log['tips'][pip])
+        for pip in [p1000, m20]
+    }
+    def pick_up(pip):
         nonlocal tip_log
         if tip_log['count'][pip] == tip_log['max'][pip]:
-            ctx.pause('Replace ' + str(pip.max_volume) + 'µl tipracks before \
-resuming.')
+            ctx.pause('Replace ' + str(pip.max_volume) + 'µl tipracks before \ resuming.')
             pip.reset_tipracks()
             tip_log['count'][pip] = 0
         pip.pick_up_tip(tip_log['tips'][pip][tip_log['count'][pip]])
