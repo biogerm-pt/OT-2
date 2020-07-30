@@ -11,7 +11,7 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 8  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
+NUM_SAMPLES = 10  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
 ELUTION_VOL = 50
 STARTING_VOL = 500
 TIP_TRACK = False
@@ -62,7 +62,7 @@ def run(ctx):
     m300 = ctx.load_instrument(
         'p300_multi_gen2', 'left', tip_racks=tips300)
 
-    magdeck = ctx.load_module('magdeck', '4')
+    magdeck = ctx.load_module('magnetic module gen2', '4')
     magdeck.disengage()
     magheight = 13.7
     magplate = magdeck.load_labware('nest_96_wellplate_2ml_deep')
