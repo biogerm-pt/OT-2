@@ -8,7 +8,7 @@ metadata = {
     'protocolName': 'V1 Station Prep SARS CoV2 MagMax',
     'author': 'Ricmag <ricmags@sapo.pt>',
     'source': 'Custom Protocol Request',
-    'apiLevel': '2.0'
+    'apiLevel': '2.5'
 }
 
 NUM_SAMPLES = 10
