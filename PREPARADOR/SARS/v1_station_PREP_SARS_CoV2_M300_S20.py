@@ -51,6 +51,18 @@ def run(ctx: protocol_api.ProtocolContext):
     s20.flow_rate.dispense = 100
     s20.flow_rate.blow_out = 300
 
+
+def pick_up(pip):
+        nonlocal tip_log
+        if tip_log['count'][pip] == tip_log['max'][pip]:
+            ctx.pause('Replace ' + str(pip.max_volume) + 'µl tipracks before \
+resuming.')
+            pip.reset_tipracks()
+            tip_log['count'][pip] = 0
+        pip.pick_up_tip(tip_log['tips'][pip][tip_log['count'][pip]])
+        tip_log['count'][pip] += 1
+
+
     # setup samples
     num_cols = math.ceil(NUM_SAMPLES/8)
     sources = bb.wells()[:2]
