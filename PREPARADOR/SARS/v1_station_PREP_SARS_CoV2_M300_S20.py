@@ -103,8 +103,7 @@ def run(ctx: protocol_api.ProtocolContext):
     # transfer binding buffer
     for d in dests_single:
         pick_up(s20)
-        m300.transfer(BB_VOLUME, sources, d, air_gap=5,
-                     new_tip='never')
+        m300.transfer(BB_VOLUME, sources, d, air_gap=5, new_tip='never')
         m300.air_gap(5)
         m300.drop_tip()    
 
