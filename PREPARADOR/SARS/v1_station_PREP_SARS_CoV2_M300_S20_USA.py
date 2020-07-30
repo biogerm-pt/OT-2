@@ -8,12 +8,12 @@ metadata = {
     'protocolName': 'V1 Station Prep SARS CoV2 MagMax',
     'author': 'Ricmag <ricmags@sapo.pt>',
     'source': 'Custom Protocol Request',
-    'apiLevel': '2.5'
+    'apiLevel': '2.3'
 }
 
 NUM_SAMPLES = 10
 BB_VOLUME = 412.5
-ICPK_VOLUME = 15
+ICPK_VOlUME = 15
 TIP_TRACK = False
 
 
@@ -26,13 +26,13 @@ def run(ctx: protocol_api.ProtocolContext):
 
     bb = ctx.load_labware(
         'nest_12_reservoir_15ml', '8', 'reagent reservoir Binding Buffer')
-    binding_buffer = bb.wells()[:2]    
+    binding_buffer = bb.wells()[:2]
     dest_plate = ctx.load_labware(
         'nest_96_wellplate_2ml_deep', '11', '96-deepwell sample plate')
 
 
     # load tips
-  
+
     tips300 = [ctx.load_labware('opentrons_96_filtertiprack_200ul', '5',
                                     '200µl filter tiprack')]
     tips20 = [ctx.load_labware('opentrons_96_filtertiprack_20ul', '6',
@@ -42,7 +42,7 @@ def run(ctx: protocol_api.ProtocolContext):
 
     m300 = ctx.load_instrument('p300_multi_gen2', 'right', tip_racks=tips300)
     s20 = ctx.load_instrument('p20_single_gen2', 'left', tip_racks=tips20)
-  
+
     m300.flow_rate.aspirate = 50
     m300.flow_rate.dispense = 150
     m300.flow_rate.blow_out = 300
@@ -93,25 +93,37 @@ def run(ctx: protocol_api.ProtocolContext):
         pip.pick_up_tip(tip_log['tips'][pip][tip_log['count'][pip]])
         tip_log['count'][pip] += 1
 
+    heights = {tube: 20 for tube in binding_buffer}
+    # radius = (binding_buffer[0].diameter)/2
+    min_h = 5
+
+    def h_track(vol, tube):
+        nonlocal heights
+        dh = vol/(math.pi*(radius**2))
+        if heights[tube] - dh > min_h:
+            heights[tube] = heights[tube] - dh
+        else:
+            heights[tube] = min_h  # stop 5mm short of the bottom
+        return heights[tube]
 
 
         # transfer internal control + proteinase K
     for d in dests_single:
         pick_up(s20)
-        s20.transfer(ICPK_VOLUME, ic_pk.bottom(2), d.bottom(2), air_gap=5, new_tip='never')
+        s20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(2), air_gap=5, new_tip='never')
         s20.air_gap(5)
-        s20.drop_tip()    
+        s20.drop_tip()
 
         # transfer binding buffer
-    for b, e in zip(bbs, dests_multi):
+    for i, e in enumerate(dests_multi):
         pick_up(m300)
-        m300.transfer(BB_VOLUME, b.bottom(2), e.bottom(10), air_gap=5, mix_after=(5, 100), new_tip='never')
+        m300.transfer(BB_VOLUME, bbs[i//6].bottom(2), e.bottom(10), air_gap=5, mix_after=(5, 100), new_tip='never')
         m300.air_gap(100)
-        m300.drop_tip()    
+        m300.drop_tip()
 
-  
 
-    
+
+
 
     ctx.comment('Terminado.')
 
