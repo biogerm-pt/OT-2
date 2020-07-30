@@ -21,7 +21,7 @@ def run(ctx: protocol_api.ProtocolContext):
 
     # load labware
     ic_pk = ctx.load_labware(
-        'opentrons_96_aluminumblock_nest_wellplate_100ul', '9',
+        'opentrons_24_aluminumblock_nest_2ml_snapcap', '9'
         'chilled tubeblock for internal control and proteinase K (strip 1)').wells()[0]
 
     bb = ctx.load_labware(
