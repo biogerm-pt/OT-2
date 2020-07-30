@@ -13,7 +13,7 @@ metadata = {
 
 NUM_SAMPLES = 10
 BB_VOLUME = 412,5
-ICPK_VOlUME = 15
+ICPK_VOLUME = 15
 TIP_TRACK = False
 
 
@@ -93,31 +93,19 @@ def run(ctx: protocol_api.ProtocolContext):
         pip.pick_up_tip(tip_log['tips'][pip][tip_log['count'][pip]])
         tip_log['count'][pip] += 1
 
-    heights = {tube: 20 for tube in binding_buffer}
-    radius = (binding_buffer[0].diameter)/2
-    min_h = 5
-
-    def h_track(vol, tube):
-        nonlocal heights
-        dh = vol/(math.pi*(radius**2))
-        if heights[tube] - dh > min_h:
-            heights[tube] = heights[tube] - dh
-        else:
-            heights[tube] = min_h  # stop 5mm short of the bottom
-        return heights[tube]
 
 
         # transfer internal control + proteinase K
     for d in dests_single:
         pick_up(s20)
-        s20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(2), air_gap=5, new_tip='never')
+        s20.transfer(ICPK_VOLUME, ic_pk.bottom(2), d.bottom(2), air_gap=5, new_tip='never')
         s20.air_gap(5)
         s20.drop_tip()    
 
         # transfer binding buffer
-    for b, e in zip(bbs, dests_multi):
+    #for b, e in zip(bbs, dests_multi):
         pick_up(m300)
-        m300.transfer(BB_VOLUME, b.bottom(2), e.bottom(10), air_gap=5, mix_after=(5, 100), new_tip='never')
+        m300.transfer(BB_VOLUME, bbs.bottom(2), dests_multi.bottom(10), air_gap=5, mix_after=(5, 100), new_tip='never')
         m300.air_gap(100)
         m300.drop_tip()    
 
