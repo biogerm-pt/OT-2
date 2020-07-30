@@ -47,14 +47,14 @@ def run(ctx: protocol_api.ProtocolContext):
     m300.flow_rate.dispense = 150
     m300.flow_rate.blow_out = 300
 
-    p20.flow_rate.aspirate = 50
+    s20.flow_rate.aspirate = 50
     s20.flow_rate.dispense = 100
     s20.flow_rate.blow_out = 300
 
     # setup samples
     num_cols = math.ceil(NUM_SAMPLES/8)
     sources = bb.wells()[:2]
-    dests_single = dest.wells()[:NUM_SAMPLES]
+    dests_single = dest_plate.wells()[:NUM_SAMPLES]
 
  # transfer internal control + proteinase K
     for d in dests_single:
