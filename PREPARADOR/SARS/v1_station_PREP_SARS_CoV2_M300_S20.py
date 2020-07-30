@@ -89,21 +89,20 @@ def run(ctx: protocol_api.ProtocolContext):
 
     # setup samples
     num_cols = math.ceil(NUM_SAMPLES/8)
-    sources = bb.wells()[:2]
+    bbs = bb.wells()[:2]
     dests_single = dest_plate.wells()[:NUM_SAMPLES]
 
         # transfer internal control + proteinase K
     for d in dests_single:
         pick_up(s20)
-        s20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(2), air_gap=5,
-                     new_tip='never')
+        s20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(2), air_gap=5, new_tip='never')
         s20.air_gap(5)
         s20.drop_tip()    
 
      # transfer binding buffer
-    for b in dests_single:
+     for b, d in zip(bbs, dests_single):
         pick_up(s20)
-        m300.transfer(BB_VOLUME, sources, b.bottom(10), air_gap=5, new_tip='never')
+        m300.transfer(BB_VOLUME, b.bottom(2), d.bottom(10), air_gap=5, new_tip='never')
         m300.air_gap(5)
         m300.drop_tip()    
 
