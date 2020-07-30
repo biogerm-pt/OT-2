@@ -99,8 +99,8 @@ def run(ctx: protocol_api.ProtocolContext):
         s20.air_gap(5)
         s20.drop_tip()    
 
-     # transfer binding buffer
-     for b, d in zip(bbs, dests_single):
+        # transfer binding buffer
+    for b, d in zip(bbs, dests_single):
         pick_up(s20)
         m300.transfer(BB_VOLUME, b.bottom(2), d.bottom(10), air_gap=5, new_tip='never')
         m300.air_gap(5)
