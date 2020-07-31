@@ -11,7 +11,7 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 8  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
+NUM_SAMPLES = 31  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
 ELUTION_VOL = 50
 STARTING_VOL = 485
 TIP_TRACK = False
@@ -44,7 +44,7 @@ def create_thread(ctx, cancel_token):
 # Start protocol
 def run(ctx):
     # Setup for flashing lights notification to empty trash
-    # cancellationToken = CancellationToken()
+    cancellationToken = CancellationToken()
 
     # load labware and pipettes
     num_cols = math.ceil(NUM_SAMPLES/8)
@@ -124,7 +124,7 @@ resuming.')
 
     switch = True
     drop_count = 0
-    drop_threshold = 120  # number of tips trash will accommodate before prompting user to empty
+    drop_threshold = 240  # number of tips trash will accommodate before prompting user to empty
 
     def drop(pip):
         nonlocal switch
@@ -137,15 +137,15 @@ resuming.')
         drop_count += 8
         if drop_count == drop_threshold:
             # Setup for flashing lights notification to empty trash
-            # if not ctx._hw_manager.hardware.is_simulator:
-            #     cancellationToken.set_true()
-            # thread = create_thread(ctx, cancellationToken)
+            if not ctx._hw_manager.hardware.is_simulator:
+                cancellationToken.set_true()
+            thread = create_thread(ctx, cancellationToken)
             m300.home()
             ctx.pause('Please empty tips from waste before resuming.')
 
             ctx.home()  # home before continuing with protocol
-            # cancellationToken.set_false()  # stop light flashing after home
-            # thread.join()
+            cancellationToken.set_false()  # stop light flashing after home
+            thread.join()
             drop_count = 0
 
     waste_vol = 0
@@ -158,15 +158,15 @@ resuming.')
             print(waste_vol)
             if waste_vol + vol >= waste_threshold:
                 # Setup for flashing lights notification to empty liquid waste
-                # if not ctx._hw_manager.hardware.is_simulator:
-                #     cancellationToken.set_true()
-                # thread = create_thread(ctx, cancellationToken)
+                if not ctx._hw_manager.hardware.is_simulator:
+                    cancellationToken.set_true()
+                thread = create_thread(ctx, cancellationToken)
                 m300.home()
                 ctx.pause('Please empty liquid waste (slot 11) before resuming.')
 
                 ctx.home()  # home before continuing with protocol
-                # cancellationToken.set_false() # stop light flashing after home
-                # thread.join()
+                cancellationToken.set_false() # stop light flashing after home
+                thread.join()
                 waste_vol = 0
             waste_vol += vol
 
