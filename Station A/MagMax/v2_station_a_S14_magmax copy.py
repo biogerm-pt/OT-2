@@ -12,6 +12,8 @@ metadata = {
 }
 
 NUM_SAMPLES = 3
+TUBE50_VOlUME = 25
+
 SAMPLE_VOLUME = 200
 BB_VOLUME = 275
 ICPK_VOlUME = 10
@@ -94,7 +96,7 @@ resuming.')
         pip.pick_up_tip(tip_log['tips'][pip][tip_log['count'][pip]])
         tip_log['count'][pip] += 1
 
-    heights = {tube: TUBE50_VOlUME for tube in binding_buffer}
+    heights = {tube: TUBE50_VOlUME * 2 for tube in binding_buffer}
     radius = (binding_buffer[0].diameter)/2
     min_h = 5
 
@@ -118,18 +120,23 @@ resuming.')
         source = binding_buffer[i//96]  # 1 tube of binding buffer can accommodate all samples here
         h = h_track(275, source)
         # custom mix
+        p1000.flow_rate.aspirate = 50
+        p1000.flow_rate.dispense = 60
         p1000.dispense(500, source.bottom(h+20))
         for _ in range(2):
-            p1000.aspirate(500, source.bottom(h))
-            p1000.dispense(500, source.bottom(h))
-        p1000.dispense(1000, source.bottom(h))
+            p1000.air_gap(500)
+            p1000.aspirate(500, source.bottom(10))
+            p1000.dispense(1000, source.bottom(h+20))
+        
        # p1000.transfer(BB_VOLUME, source.bottom(h), d.bottom(5), air_gap=100,
        #              new_tip='never')
-        p1000.flow_rate.aspirate = 20
-        p1000.flow_rate.dispense = 60
+        
+        p1000.flow_rate.aspirate = 5
+        p1000.flow_rate.dispense = 10
         p1000.aspirate(BB_VOLUME, source.bottom(h))
-        p1000.dispense(BB_VOLUME + 250, d.bottom(5))
-        p1000.air_gap(100)
+        p1000.air_gap(10)
+        p1000.dispense(BB_VOLUME + 250, d.bottom(10))
+        p1000.air_gap(10)
     p1000.drop_tip()
 
     # transfer internal control + proteinase K
