@@ -13,7 +13,7 @@ metadata = {
 
 NUM_SAMPLES = 8  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
 ELUTION_VOL = 50
-STARTING_VOL = 480
+STARTING_VOL = 485
 TIP_TRACK = False
 PARK = True
 
