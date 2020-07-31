@@ -6,15 +6,13 @@ import math
 # metadata
 metadata = {
     'protocolName': 'V1 S14 Station A MagMax',
-    'author': 'Nick <protocols@opentrons.com>',
+    'author': 'RiCardo Magahães <ricmag@sapo.pt>',
     'source': 'Custom Protocol Request',
     'apiLevel': '2.0'
 }
 
-NUM_SAMPLES = 3
+NUM_SAMPLES = 8
 SAMPLE_VOLUME = 200
-BB_VOLUME = 275
-ICPK_VOlUME = 10
 TIP_TRACK = False
 
 
@@ -22,7 +20,7 @@ def run(ctx: protocol_api.ProtocolContext):
 
     # load labware
     ic_pk = ctx.load_labware(
-        'opentrons_24_aluminumblock_nest_2ml_snapcap', '1', 
+        'opentrons_96_aluminumblock_generic_pcr_strip_200ul', '1',
         'chilled tubeblock for internal control and proteinase K (strip 1)').wells()[0]
     source_racks = [
         ctx.load_labware(
@@ -45,7 +43,7 @@ def run(ctx: protocol_api.ProtocolContext):
                                    '20µl filter tiprack')]
 
     # load pipette
-    s20 = ctx.load_instrument('p20_single_gen2', 'left', tip_racks=tipracks20)
+    m20 = ctx.load_instrument('p20_multi_gen2', 'left', tip_racks=tipracks20)
     p1000 = ctx.load_instrument(
         'p1000_single_gen2', 'right', tip_racks=tipracks1000)
 
@@ -68,20 +66,19 @@ def run(ctx: protocol_api.ProtocolContext):
                 else:
                     tip_log['count'][p1000] = 0
                 if 'tips20' in data:
-                    tip_log['count'][s20] = data['tips20']
+                    tip_log['count'][m20] = data['tips20']
                 else:
-                    tip_log['count'][s20] = 0
+                    tip_log['count'][m20] = 0
     else:
-        tip_log['count'] = {p1000: 0, s20: 0}
+        tip_log['count'] = {p1000: 0, m20: 0}
 
     tip_log['tips'] = {
         p1000: [tip for rack in tipracks1000 for tip in rack.wells()],
-        #s20: [tip for rack in tipracks20 for tip in rack.rows()[0]]
-        s20: [tip for rack in tipracks20 for tip in rack.wells()]
+        m20: [tip for rack in tipracks20 for tip in rack.rows()[0]]
     }
     tip_log['max'] = {
         pip: len(tip_log['tips'][pip])
-        for pip in [p1000, s20]
+        for pip in [p1000, m20]
     }
 
     def pick_up(pip):
@@ -107,6 +104,13 @@ resuming.')
             heights[tube] = min_h  # stop 5mm short of the bottom
         return heights[tube]
 
+    # transfer sample
+    for s, d in zip(sources, dests_single):
+        pick_up(p1000)
+        p1000.transfer(SAMPLE_VOLUME, s.bottom(5), d.bottom(5), air_gap=100,
+                       new_tip='never')
+        p1000.air_gap(100)
+        p1000.drop_tip()
 
     # transfer binding buffer and mix
     for i, (s, d) in enumerate(zip(sources, dests_single)):
@@ -117,18 +121,18 @@ resuming.')
         for _ in range(10):
             p1000.aspirate(500, source.bottom(h))
             p1000.dispense(500, source.bottom(h+20))
-        p1000.transfer(BB_VOLUME, source.bottom(h), d.bottom(5), air_gap=100,
+        p1000.transfer(275, source.bottom(h), d.bottom(5), air_gap=100,
                        mix_after=(10, 100), new_tip='never')
         p1000.air_gap(100)
-    p1000.drop_tip()
+        p1000.drop_tip()
 
     # transfer internal control + proteinase K
-    for d in dests_single:
-        pick_up(s20)
-        s20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(10), air_gap=5,
+    for d in dests_multi:
+        pick_up(m20)
+        m20.transfer(10, ic_pk.bottom(2), d.bottom(10), air_gap=5,
                      new_tip='never')
-        s20.air_gap(10)
-        s20.drop_tip()
+        m20.air_gap(5)
+        m20.drop_tip()
 
     ctx.comment('Move deepwell plate (slot 4) to Station B for RNA \
 extraction.')
@@ -139,7 +143,7 @@ extraction.')
             os.mkdir(folder_path)
         data = {
             'tips1000': tip_log['count'][p1000],
-            'tips20': tip_log['count'][s20]
+            'tips20': tip_log['count'][m20]
         }
         with open(tip_file_path, 'w') as outfile:
             json.dump(data, outfile)

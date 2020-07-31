@@ -34,7 +34,7 @@ def run(ctx: protocol_api.ProtocolContext):
         'nest_96_wellplate_2ml_deep', '4', '96-deepwell sample plate')
     binding_buffer = ctx.load_labware(
         'opentrons_6_tuberack_falcon_50ml_conical', '7',
-        '50ml tuberack for binding buffer (tubes A1+B1)').wells()[:1]
+        '50ml tuberack for binding buffer (tubes A1+B1)').wells('B1')
     # binding_buffer = ctx.load_labware(
     #     'biorad_96_wellplate_200ul_pcr', '7',
     #     '50ml tuberack for lysis buffer + PK (tube A1)').wells()[:1]
@@ -107,19 +107,25 @@ resuming.')
             heights[tube] = min_h  # stop 5mm short of the bottom
         return heights[tube]
 
+    p1000.flow_rate.aspirate = 50
+    p1000.flow_rate.dispense = 70
+    p1000.flow_rate.blow_out = 100
 
     # transfer binding buffer and mix
+    pick_up(p1000)
     for i, (s, d) in enumerate(zip(sources, dests_single)):
-        pick_up(p1000)
+
         source = binding_buffer[i//96]  # 1 tube of binding buffer can accommodate all samples here
         h = h_track(275, source)
         # custom mix
-        for _ in range(10):
+        p1000.dispense(500, source.bottom(h+20))
+        for _ in range(2):
             p1000.aspirate(500, source.bottom(h))
             p1000.dispense(500, source.bottom(h+20))
+        p1000.flow_rate.aspirate = 20
         p1000.transfer(BB_VOLUME, source.bottom(h), d.bottom(5), air_gap=100,
-                       mix_after=(10, 100), new_tip='never')
-        p1000.air_gap(100)
+                     new_tip='never')
+        p1000.air_gap(500)
     p1000.drop_tip()
 
     # transfer internal control + proteinase K
