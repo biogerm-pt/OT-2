@@ -12,7 +12,7 @@ metadata = {
 }
 
 NUM_SAMPLES = 3
-TUBE50_VOlUME = 25
+TUBE50_VOlUME = 3.5
 
 SAMPLE_VOLUME = 200
 BB_VOLUME = 275
@@ -96,7 +96,7 @@ resuming.')
         pip.pick_up_tip(tip_log['tips'][pip][tip_log['count'][pip]])
         tip_log['count'][pip] += 1
 
-    heights = {tube: TUBE50_VOlUME * 2 for tube in binding_buffer}
+    heights = {tube: TUBE50_VOlUME * 1.5 for tube in binding_buffer}
     radius = (binding_buffer[0].diameter)/2
     min_h = 5
 
@@ -113,6 +113,17 @@ resuming.')
     p1000.flow_rate.dispense = 60
     p1000.flow_rate.blow_out = 100
 
+
+ # transfer internal control + proteinase K
+    pick_up(s20)
+    for d in dests_single:
+        s20.dispense(10, ic_pk.bottom(2))
+        s20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(2), air_gap=5,
+                     new_tip='never')
+        s20.air_gap(5)
+    s20.drop_tip()
+
+
     # transfer binding buffer and mix
     pick_up(p1000)
     for i, (s, d) in enumerate(zip(sources, dests_single)):
@@ -120,32 +131,26 @@ resuming.')
         source = binding_buffer[i//96]  # 1 tube of binding buffer can accommodate all samples here
         h = h_track(275, source)
         # custom mix
-        p1000.flow_rate.aspirate = 50
-        p1000.flow_rate.dispense = 60
+        p1000.flow_rate.aspirate = 100
+        p1000.flow_rate.dispense = 100
         p1000.dispense(500, source.bottom(h+20))
         for _ in range(2):
-            p1000.air_gap(500)
-            p1000.aspirate(500, source.bottom(10))
-            p1000.dispense(1000, source.bottom(h+20))
+            # p1000.air_gap(500)
+            p1000.aspirate(500, source.bottom(h))
+            p1000.dispense(500, source.bottom(h+20))
         
        # p1000.transfer(BB_VOLUME, source.bottom(h), d.bottom(5), air_gap=100,
        #              new_tip='never')
         
-        p1000.flow_rate.aspirate = 5
-        p1000.flow_rate.dispense = 10
+        p1000.flow_rate.aspirate = 50
+        p1000.flow_rate.dispense = 100
         p1000.aspirate(BB_VOLUME, source.bottom(h))
         p1000.air_gap(10)
-        p1000.dispense(BB_VOLUME + 250, d.bottom(10))
+        p1000.dispense(BB_VOLUME + 100, d.bottom(10))
         p1000.air_gap(10)
     p1000.drop_tip()
 
-    # transfer internal control + proteinase K
-    for d in dests_single:
-        pick_up(s20)
-        s20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(2), air_gap=5,
-                     new_tip='never')
-        s20.air_gap(5)
-        s20.drop_tip()
+   
 
     ctx.comment('Move deepwell plate (slot 4) to Station B for RNA \
 extraction.')
