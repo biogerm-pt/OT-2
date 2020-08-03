@@ -68,7 +68,7 @@ resuming.')
             pool_source_set = dest_plate.wells()[i*2:i*2+2]
         for s in pool_source_set:
             pick_up(p1000)
-            p1000.transfer(100, s, dest_plate.wells()[i+64], air_gap=20, mix_before (1, 100); mix_after (2, 75);
+            p1000.transfer(100, s, dest_plate.wells()[i+64], air_gap=20, mix_before=(1, 100); mix_after=(2, 75);
                            new_tip='never')
             p1000.air_gap(100)
             p1000.drop_tip()
