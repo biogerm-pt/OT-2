@@ -141,12 +141,16 @@ resuming.')
        # p1000.transfer(BB_VOLUME, source.bottom(h), d.bottom(5), air_gap=100,
        #              new_tip='never')
         
-        p1000.flow_rate.aspirate = 50
+        p1000.flow_rate.aspirate = 100
         p1000.flow_rate.dispense = 100
-        p1000.aspirate(BB_VOLUME, source.bottom(h))
-        p1000.air_gap(10)
-        p1000.dispense(BB_VOLUME + 100, d.bottom(10))
-        p1000.air_gap(10)
+        p1000.distribute(BB_VOLUME, source.bottom(h), d.bottom(5), air_gap=100, new_tip='never')
+
+
+
+        #p1000.aspirate(BB_VOLUME, source.bottom(h))
+        #p1000.air_gap(10)
+        #1000.dispense(BB_VOLUME + 100, d.bottom(10))
+        #p1000.air_gap(10)
     p1000.drop_tip()
 
    
