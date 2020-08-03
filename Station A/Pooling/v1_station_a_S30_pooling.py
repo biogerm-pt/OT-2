@@ -11,7 +11,7 @@ metadata = {
     'apiLevel': '2.4'
 }
 
-NUM_SAMPLES = 64
+NUM_SAMPLES = 64    # Max number of samples - 64
 SAMPLE_VOLUME = 100
 TIP_TRACK = False
 
