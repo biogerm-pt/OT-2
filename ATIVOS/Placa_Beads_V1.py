@@ -11,9 +11,10 @@ metadata = {
     'apiLevel': '2.0'
 }
 
-NUM_SAMPLES = 3
-TUBE50_VOlUME = 20
+NUM_SAMPLES = 27
 
+
+TUBE50_VOlUME = 20
 BB_VOLUME = 412.5
 ICPK_VOlUME = 15
 TIP_TRACK = False
