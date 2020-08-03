@@ -19,9 +19,11 @@ ICPK_VOlUME = 15
 TIP_TRACK = False
 
 
+
+
 def run(ctx: protocol_api.ProtocolContext):
 
-
+    ctx._hw_manager.hardware.set_lights(rail=True)
     #set_rail_lights (on)
 
 
