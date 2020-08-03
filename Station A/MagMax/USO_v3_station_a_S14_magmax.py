@@ -14,9 +14,8 @@ metadata = {
 NUM_SAMPLES = 3
 TUBE50_VOlUME = 3.5
 
-SAMPLE_VOLUME = 200
-BB_VOLUME = 275
-ICPK_VOlUME = 10
+BB_VOLUME = 412.5
+ICPK_VOlUME = 15
 TIP_TRACK = False
 
 
@@ -134,7 +133,7 @@ resuming.')
         p1000.flow_rate.aspirate = 100
         p1000.flow_rate.dispense = 100
         p1000.dispense(500, source.bottom(h+20))
-        for _ in range(2):
+        for _ in range(4):
             # p1000.air_gap(500)
             p1000.aspirate(500, source.bottom(h))
             p1000.dispense(500, source.bottom(h+20))
