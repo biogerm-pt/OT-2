@@ -2,7 +2,7 @@ from opentrons import protocol_api
 
 metadata = {'apiLevel': '2.5'}
 
-NUM_SAMPLES = 8
+NUM_SAMPLES = 32
 SAMPLE_VOLUME = 200
 
 
