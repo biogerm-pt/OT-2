@@ -69,8 +69,8 @@ def run(ctx):
     magdeck = ctx.load_module('magnetic module gen2', '4')
     magdeck.disengage()
     magheight = 13.7
-    # magplate = magdeck.load_labware('nest_96_wellplate_2ml_deep')
-    magplate = magdeck.load_labware('biorad_96_wellplate_200ul_pcr')
+    magplate = magdeck.load_labware('nest_96_wellplate_2ml_deep')
+    #magplate = magdeck.load_labware('biorad_96_wellplate_200ul_pcr')
     tempdeck = ctx.load_module('Temperature Module Gen2', '1')
     flatplate = tempdeck.load_labware(
                 'opentrons_96_aluminumblock_nest_wellplate_100ul',)
@@ -132,7 +132,7 @@ resuming.')
 
     switch = True
     drop_count = 0
-    drop_threshold = 120  # number of tips trash will accommodate before prompting user to empty
+    drop_threshold = 240  # number of tips trash will accommodate before prompting user to empty
 
     def drop(pip):
         nonlocal switch
