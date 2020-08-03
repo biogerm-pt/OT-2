@@ -8,10 +8,10 @@ metadata = {
     'protocolName': 'V1 S14 Station A MagMax',
     'author': 'Nick <protocols@opentrons.com>',
     'source': 'Custom Protocol Request',
-    'apiLevel': '2.0'
+    'apiLevel': '2.5'
 }
 
-NUM_SAMPLES = 3
+NUM_SAMPLES = 4
 TUBE50_VOlUME = 20
 
 BB_VOLUME = 412.5
@@ -20,6 +20,10 @@ TIP_TRACK = False
 
 
 def run(ctx: protocol_api.ProtocolContext):
+
+
+    #set_rail_lights (on)
+
 
     # load labware
     ic_pk = ctx.load_labware(
@@ -54,6 +58,7 @@ def run(ctx: protocol_api.ProtocolContext):
     sources = [
         well for rack in source_racks for well in rack.wells()][:NUM_SAMPLES]
     dests_single = dest_plate.wells()[:NUM_SAMPLES]
+    dests_row = dest_plate.rows()[:NUM_SAMPLES]
     num_cols = math.ceil(NUM_SAMPLES/8)
     dests_multi = dest_plate.rows()[0][:num_cols]
 
@@ -108,17 +113,16 @@ resuming.')
             heights[tube] = min_h  # stop 5mm short of the bottom
         return heights[tube]
 
-    p1000.flow_rate.aspirate = 50
-    p1000.flow_rate.dispense = 60
-    p1000.flow_rate.blow_out = 100
+    s20.flow_rate.aspirate = 100
+    s20.flow_rate.dispense = 100
+    s20.flow_rate.blow_out = 100
 
 
  # transfer internal control + proteinase K
     pick_up(s20)
     for d in dests_single:
-        #s20.dispense(10, ic_pk.bottom(2))
-        s20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(2), air_gap=5,
-                     new_tip='never')
+        s20.dispense(10, ic_pk.bottom(2))
+        s20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(2), air_gap=5,new_tip='never')
         s20.air_gap(5)
     s20.drop_tip()
 
@@ -143,7 +147,7 @@ resuming.')
         
         p1000.flow_rate.aspirate = 100
         p1000.flow_rate.dispense = 100
-        p1000.distribute(BB_VOLUME, source.bottom(h), d.bottom(5), air_gap=100, new_tip='never')
+        p1000.distribute(BB_VOLUME, source, d, air_gap=100, new_tip='never')
 
 
 
