@@ -12,7 +12,7 @@ metadata = {
 }
 
 NUM_SAMPLES = 3
-TUBE50_VOlUME = 3.5
+TUBE50_VOlUME = 20
 
 BB_VOLUME = 412.5
 ICPK_VOlUME = 15
@@ -95,7 +95,7 @@ resuming.')
         pip.pick_up_tip(tip_log['tips'][pip][tip_log['count'][pip]])
         tip_log['count'][pip] += 1
 
-    heights = {tube: TUBE50_VOlUME * 1.5 for tube in binding_buffer}
+    heights = {tube: TUBE50_VOlUME * 1 for tube in binding_buffer}
     radius = (binding_buffer[0].diameter)/2
     min_h = 5
 

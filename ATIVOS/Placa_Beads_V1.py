@@ -12,9 +12,10 @@ metadata = {
 }
 
 NUM_SAMPLES = 3
-SAMPLE_VOLUME = 200
-BB_VOLUME = 275
-ICPK_VOlUME = 10
+TUBE50_VOlUME = 20
+
+BB_VOLUME = 412.5
+ICPK_VOlUME = 15
 TIP_TRACK = False
 
 
@@ -22,26 +23,26 @@ def run(ctx: protocol_api.ProtocolContext):
 
     # load labware
     ic_pk = ctx.load_labware(
-        'opentrons_24_aluminumblock_nest_2ml_snapcap', '1', 
+        'opentrons_24_aluminumblock_nest_2ml_snapcap', '9', 
         'chilled tubeblock for internal control and proteinase K (strip 1)').wells()[0]
     source_racks = [
         ctx.load_labware(
             'opentrons_24_tuberack_eppendorf_2ml_safelock_snapcap', slot,
             'source tuberack ' + str(i+1))
-        for i, slot in enumerate(['5', '6', '2', '3'])
+        for i, slot in enumerate(['1', '2', '3', '4'])
     ]
     dest_plate = ctx.load_labware(
-        'nest_96_wellplate_2ml_deep', '4', '96-deepwell sample plate')
+        'nest_96_wellplate_2ml_deep', '8', '96-deepwell sample plate')
     binding_buffer = ctx.load_labware(
-        'opentrons_6_tuberack_falcon_50ml_conical', '7',
-        '50ml tuberack for binding buffer (tubes A1+B1)').wells('B1')
+        'opentrons_6_tuberack_falcon_50ml_conical', '11',
+        '50ml tuberack for binding buffer (tube B1)').wells('B1')
     # binding_buffer = ctx.load_labware(
     #     'biorad_96_wellplate_200ul_pcr', '7',
     #     '50ml tuberack for lysis buffer + PK (tube A1)').wells()[:1]
     tipracks1000 = [ctx.load_labware('opentrons_96_filtertiprack_1000ul', slot,
                                      '1000µl filter tiprack')
-                    for slot in ['8', '9', '11']]
-    tipracks20 = [ctx.load_labware('opentrons_96_filtertiprack_20ul', '10',
+                    for slot in ['10', '7']]
+    tipracks20 = [ctx.load_labware('opentrons_96_filtertiprack_20ul', '6',
                                    '20µl filter tiprack')]
 
     # load pipette
@@ -94,7 +95,7 @@ resuming.')
         pip.pick_up_tip(tip_log['tips'][pip][tip_log['count'][pip]])
         tip_log['count'][pip] += 1
 
-    heights = {tube: 20 for tube in binding_buffer}
+    heights = {tube: TUBE50_VOlUME * 1 for tube in binding_buffer}
     radius = (binding_buffer[0].diameter)/2
     min_h = 5
 
@@ -108,8 +109,19 @@ resuming.')
         return heights[tube]
 
     p1000.flow_rate.aspirate = 50
-    p1000.flow_rate.dispense = 70
+    p1000.flow_rate.dispense = 60
     p1000.flow_rate.blow_out = 100
+
+
+ # transfer internal control + proteinase K
+    pick_up(s20)
+    for d in dests_single:
+        s20.dispense(10, ic_pk.bottom(2))
+        s20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(2), air_gap=5,
+                     new_tip='never')
+        s20.air_gap(5)
+    s20.drop_tip()
+
 
     # transfer binding buffer and mix
     pick_up(p1000)
@@ -118,23 +130,26 @@ resuming.')
         source = binding_buffer[i//96]  # 1 tube of binding buffer can accommodate all samples here
         h = h_track(275, source)
         # custom mix
+        p1000.flow_rate.aspirate = 100
+        p1000.flow_rate.dispense = 100
         p1000.dispense(500, source.bottom(h+20))
-        for _ in range(2):
+        for _ in range(4):
+            # p1000.air_gap(500)
             p1000.aspirate(500, source.bottom(h))
             p1000.dispense(500, source.bottom(h+20))
-        p1000.flow_rate.aspirate = 20
-        p1000.transfer(BB_VOLUME, source.bottom(h), d.bottom(5), air_gap=100,
-                     new_tip='never')
-        p1000.air_gap(500)
+        
+       # p1000.transfer(BB_VOLUME, source.bottom(h), d.bottom(5), air_gap=100,
+       #              new_tip='never')
+        
+        p1000.flow_rate.aspirate = 50
+        p1000.flow_rate.dispense = 100
+        p1000.aspirate(BB_VOLUME, source.bottom(h))
+        p1000.air_gap(10)
+        p1000.dispense(BB_VOLUME + 100, d.bottom(10))
+        p1000.air_gap(10)
     p1000.drop_tip()
 
-    # transfer internal control + proteinase K
-    for d in dests_single:
-        pick_up(s20)
-        s20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(10), air_gap=5,
-                     new_tip='never')
-        s20.air_gap(10)
-        s20.drop_tip()
+   
 
     ctx.comment('Move deepwell plate (slot 4) to Station B for RNA \
 extraction.')
