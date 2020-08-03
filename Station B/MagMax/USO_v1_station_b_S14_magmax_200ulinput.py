@@ -11,9 +11,9 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 96  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
+NUM_SAMPLES = 41  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
 ELUTION_VOL = 50
-STARTING_VOL = 480
+STARTING_VOL = 485
 TIP_TRACK = False
 PARK = True
 
@@ -139,7 +139,7 @@ resuming.')
             # Setup for flashing lights notification to empty trash
             if not ctx._hw_manager.hardware.is_simulator:
                 cancellationToken.set_true()
-             thread = create_thread(ctx, cancellationToken)
+            thread = create_thread(ctx, cancellationToken)
             m300.home()
             ctx.pause('Please empty tips from waste before resuming.')
 
