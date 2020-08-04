@@ -6,7 +6,7 @@ import threading
 from time import sleep
 
 metadata = {
-    'protocolName': 'Version 2 S30 Station B MagMax (200µl sample input)',
+    'protocolName': 'USO_v2_station_b_S30_Pool_magmax_200ulinput',
     'author': 'Nick <ndiehl@opentrons.com',
     'apiLevel': '2.3'
 }
