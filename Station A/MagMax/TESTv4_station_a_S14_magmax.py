@@ -11,7 +11,7 @@ metadata = {
     'apiLevel': '2.0'
 }
 
-NUM_SAMPLES = 3
+NUM_SAMPLES = 4
 TUBE50_VOlUME = 20
 
 BB_VOLUME = 412.5
@@ -141,7 +141,7 @@ resuming.')
     pick_up(p1000)
     for i in range(math.ceil(NUM_SAMPLES/2)):
         if NUM_SAMPLES % 2 != 0 and i == math.ceil(NUM_SAMPLES/2) - 1:
-            dest_set = [dest_plate.wells()[NUM_SAMPLES]]
+            dest_set = [dest_plate.wells()[NUM_SAMPLES-1]]
         else:
             dest_set = dest_plate.wells()[i*2:i*2+2]
         for _ in range(len(dest_set)):
