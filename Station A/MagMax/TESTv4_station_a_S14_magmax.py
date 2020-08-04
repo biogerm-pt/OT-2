@@ -114,13 +114,13 @@ resuming.')
 
 
   # transfer internal control + proteinase K
-     pick_up(s20)
-     for d in dests_single:
-         s20.dispense(10, ic_pk.bottom(2))
-         s20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(2), air_gap=5,
-                      new_tip='never')
-         s20.air_gap(5)
-     s20.drop_tip()
+    pick_up(s20)
+    for d in dests_single:
+        s20.dispense(10, ic_pk.bottom(2))
+        s20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(2), air_gap=5,
+                     new_tip='never')
+        s20.air_gap(5)
+    s20.drop_tip()
 
 
     # # transfer binding buffer and mix
