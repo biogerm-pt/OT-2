@@ -72,7 +72,7 @@ resuming.')
             pick_up(p1000)
             p1000.transfer(vol, s, dest_plate.wells()[i+64],
                            air_gap=20, new_tip='never')
-            p1000.air_gap(100)
+            p1000.air_gap(10)
             p1000.drop_tip()
 
     ctx.comment('Move deepwell plate (slot 2) to Station B for RNA \
