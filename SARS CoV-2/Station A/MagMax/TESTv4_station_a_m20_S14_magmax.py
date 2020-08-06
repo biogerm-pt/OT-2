@@ -98,18 +98,18 @@ resuming.')
         pip.pick_up_tip(tip_log['tips'][pip][tip_log['count'][pip]])
         tip_log['count'][pip] += 1
 
-    heights = {binding_buffer: TUBE50_VOlUME * 1}
-    radius = (binding_buffer.diameter)/2
-    min_h = 5
+#    heights = {binding_buffer: TUBE50_VOlUME * 1}
+#   radius = (binding_buffer.diameter)/2
+#  min_h = 5
 
-    def h_track(vol, tube):
-        nonlocal heights
-        dh = vol/(math.pi*(radius**2))
-        if heights[tube] - dh > min_h:
-            heights[tube] = heights[tube] - dh
-        else:
-            heights[tube] = min_h  # stop 5mm short of the bottom
-        return heights[tube]
+#    def h_track(vol, tube):
+#        nonlocal heights
+#        dh = vol/(math.pi*(radius**2))
+#        if heights[tube] - dh > min_h:
+#            heights[tube] = heights[tube] - dh
+#        else:
+#            heights[tube] = min_h  # stop 5mm short of the bottom
+#        return heights[tube]
 
     m300.flow_rate.aspirate = 50
     m300.flow_rate.dispense = 60
@@ -150,8 +150,8 @@ resuming.')
         for i in range(len(dest_set)):
             h = h_track(BB_VOLUME, binding_buffer)
             if i == 0:
-                m300.mix(MIX_REPETITIONS, MIX_VOLUME, binding_buffer.bottom(h))
-            m300.aspirate(BB_VOLUME, binding_buffer.bottom(h))
+                m300.mix(MIX_REPETITIONS, MIX_VOLUME, binding_buffer.bottom(2))
+            m300.aspirate(BB_VOLUME, binding_buffer.bottom(2))
             m300.air_gap(20)
         for s in dest_set:
             m300.dispense(BB_VOLUME + 20, s)
