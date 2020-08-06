@@ -68,7 +68,7 @@ def run(ctx: protocol_api.ProtocolContext):
             with open(tip_file_path) as json_file:
                 data = json.load(json_file)
                 if 'tips1000' in data:
-                    tip_log['count'][m300] = data['tips1000']
+                    tip_log['count'][m300] = data['tips300']
                 else:
                     tip_log['count'][m300] = 0
                 if 'tips20' in data:
@@ -79,9 +79,9 @@ def run(ctx: protocol_api.ProtocolContext):
         tip_log['count'] = {m300: 0, m20: 0}
 
     tip_log['tips'] = {
-        m300: [tip for rack in  for tip in rack.wells()],
+        m300: [tip for rack in tipracks300 for tip in rack.rows()[0]],
         #m20: [tip for rack in tipracks20 for tip in rack.rows()[0]]
-        m20: [tip for rack in tipracks20 for tip in rack.wells()]
+        m20: [tip for rack in tipracks20 for tip in rack.rows()[0]]
     }
     tip_log['max'] = {
         pip: len(tip_log['tips'][pip])
