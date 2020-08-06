@@ -153,18 +153,26 @@ resuming.')
             #h = h_track(BB_VOLUME, binding_buffer)
             if i == 0:
                 m300.mix(MIX_REPETITIONS, MIX_VOLUME, bbsrc)
-            m300.aspirate(BB_VOLUME/2, bbsrc)
+            m300.aspirate(BB_VOLUME/3, bbsrc)
             m300.air_gap(20)
         for s in dest_set:
-            m300.dispense(BB_VOLUME/2 + 20, s)
+            m300.dispense(BB_VOLUME/3 + 20, s)
         for i in range(len(dest_set)):
             #h = h_track(BB_VOLUME, binding_buffer)
             if i == 0:
                 m300.mix(MIX_REPETITIONS, MIX_VOLUME, bbsrc)
-            m300.aspirate(BB_VOLUME/2, bbsrc)
+            m300.aspirate(BB_VOLUME/3, bbsrc)
             m300.air_gap(20)
         for s in dest_set:
-            m300.dispense(BB_VOLUME/2 + 20, s)
+            m300.dispense(BB_VOLUME/3 + 20, s)
+        for i in range(len(dest_set)):
+            #h = h_track(BB_VOLUME, binding_buffer)
+            if i == 0:
+                m300.mix(MIX_REPETITIONS, MIX_VOLUME, bbsrc)
+            m300.aspirate(BB_VOLUME/3, bbsrc)
+            m300.air_gap(20)
+        for s in dest_set:
+            m300.dispense(BB_VOLUME/3 + 20, s)
 
     m300.drop_tip()
 
