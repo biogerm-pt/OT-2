@@ -15,6 +15,8 @@ NUM_SAMPLES = 11
 TUBE50_VOlUME = 20
 
 BB_VOLUME = 412.5
+MIX_REPETITIONS = 3
+MIX_VOLUME = 500
 ICPK_VOlUME = 15
 TIP_TRACK = False
 
@@ -33,22 +35,23 @@ def run(ctx: protocol_api.ProtocolContext):
     ]
     dest_plate = ctx.load_labware(
         'nest_96_wellplate_2ml_deep', '8', '96-deepwell sample plate')
-    binding_buffer = ctx.load_labware(
-        'opentrons_6_tuberack_falcon_50ml_conical', '11',
-        '50ml tuberack for binding buffer (tube B1)').wells()[1]
+    resbb = ctx.load_labware(
+        'nest_12_reservoir_15ml', '11',
+        '12,6 ml reservoir for binding buffer')
+    binding_buffer = resbb.wells()[:4]
     # binding_buffer = ctx.load_labware(
     #     'biorad_96_wellplate_200ul_pcr', '11',
     #     '50ml tuberack for lysis buffer + PK (tube A1)').wells()[1]
-    tipracks1000 = [ctx.load_labware('opentrons_96_filtertiprack_1000ul', slot,
-                                     '1000µl filter tiprack')
+    tipracks300 = [ctx.load_labware('opentrons_96_tiprack_300ul', slot,
+                                     '300µl filter tiprack')
                     for slot in ['10', '7']]
     tipracks20 = [ctx.load_labware('opentrons_96_filtertiprack_20ul', '6',
                                    '20µl filter tiprack')]
 
     # load pipette
-    s20 = ctx.load_instrument('p20_single_gen2', 'left', tip_racks=tipracks20)
-    p1000 = ctx.load_instrument(
-        'p1000_single_gen2', 'right', tip_racks=tipracks1000)
+    m20 = ctx.load_instrument('p20_multi_gen2', 'left', tip_racks=tipracks20)
+    m300 = ctx.load_instrument(
+        'p300_multi_gen2', 'right', tip_racks=tipracks300)
 
     # setup samples
     sources = [
@@ -65,24 +68,24 @@ def run(ctx: protocol_api.ProtocolContext):
             with open(tip_file_path) as json_file:
                 data = json.load(json_file)
                 if 'tips1000' in data:
-                    tip_log['count'][p1000] = data['tips1000']
+                    tip_log['count'][m300] = data['tips1000']
                 else:
-                    tip_log['count'][p1000] = 0
+                    tip_log['count'][m300] = 0
                 if 'tips20' in data:
-                    tip_log['count'][s20] = data['tips20']
+                    tip_log['count'][m20] = data['tips20']
                 else:
-                    tip_log['count'][s20] = 0
+                    tip_log['count'][m20] = 0
     else:
-        tip_log['count'] = {p1000: 0, s20: 0}
+        tip_log['count'] = {m300: 0, m20: 0}
 
     tip_log['tips'] = {
-        p1000: [tip for rack in tipracks1000 for tip in rack.wells()],
-        #s20: [tip for rack in tipracks20 for tip in rack.rows()[0]]
-        s20: [tip for rack in tipracks20 for tip in rack.wells()]
+        m300: [tip for rack in  for tip in rack.wells()],
+        #m20: [tip for rack in tipracks20 for tip in rack.rows()[0]]
+        m20: [tip for rack in tipracks20 for tip in rack.wells()]
     }
     tip_log['max'] = {
         pip: len(tip_log['tips'][pip])
-        for pip in [p1000, s20]
+        for pip in [m300, m20]
     }
 
     def pick_up(pip):
@@ -108,48 +111,51 @@ resuming.')
             heights[tube] = min_h  # stop 5mm short of the bottom
         return heights[tube]
 
-    p1000.flow_rate.aspirate = 50
-    p1000.flow_rate.dispense = 60
-    p1000.flow_rate.blow_out = 100
+    m300.flow_rate.aspirate = 50
+    m300.flow_rate.dispense = 60
+    m300.flow_rate.blow_out = 100
 
 
   # transfer internal control + proteinase K
-    pick_up(s20)
-    for d in dests_single:
-        s20.dispense(10, ic_pk.bottom(2))
-        s20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(2), air_gap=5,
+    pick_up(m20)
+    for d in dests_multi:
+        m20.dispense(10, ic_pk.bottom(2))
+        m20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(2), air_gap=5,
                      new_tip='never')
-        s20.air_gap(5)
-    s20.drop_tip()
+        m20.air_gap(5)
+    m20.drop_tip()
 
 
     # # transfer binding buffer and mix
-    # pick_up(p1000)
-    # for i, (s, d) in enumerate(zip(sources, dests_single)):
+    # pick_up(m300)
+    # for i, (s, d) in enumerate(zip(sources, dests_multi)):
     #
     #     source = binding_buffer[i//96]  # 1 tube of binding buffer can accommodate all samples here
     #     h = h_track(275, source)
     #     # custom mix
-    #     p1000.flow_rate.aspirate = 100
-    #     p1000.flow_rate.dispense = 100
-    #     p1000.dispense(500, source.bottom(h+20))
+    #     m300.flow_rate.aspirate = 100
+    #     m300.flow_rate.dispense = 100
+    #     m300.dispense(500, source.bottom(h+20))
     #     for _ in range(4):
-    #         # p1000.air_gap(500)
-    #         p1000.aspirate(500, source.bottom(h))
-    #         p1000.dispense(500, source.bottom(h+20))
+    #         # m300.air_gap(500)
+    #         m300.aspirate(500, source.bottom(h))
+    #         m300.dispense(500, source.bottom(h+20))
 
-    pick_up(p1000)
+    pick_up(m300)
     for i in range(math.ceil(NUM_SAMPLES/2)):
         if NUM_SAMPLES % 2 != 0 and i == math.ceil(NUM_SAMPLES/2) - 1:
             dest_set = [dest_plate.wells()[NUM_SAMPLES-1]]
         else:
             dest_set = dest_plate.wells()[i*2:i*2+2]
-        for _ in range(len(dest_set)):
-            p1000.aspirate(BB_VOLUME, binding_buffer.bottom(h_track(BB_VOLUME, binding_buffer)))
-            p1000.air_gap(20)
+        for i in range(len(dest_set)):
+            h = h_track(BB_VOLUME, binding_buffer)
+            if i == 0:
+                m300.mix(MIX_REPETITIONS, MIX_VOLUME, binding_buffer.bottom(h))
+            m300.aspirate(BB_VOLUME, binding_buffer.bottom(h))
+            m300.air_gap(20)
         for s in dest_set:
-            p1000.dispense(BB_VOLUME + 20, s)
-    p1000.drop_tip()
+            m300.dispense(BB_VOLUME + 20, s)
+    m300.drop_tip()
 
     ctx.comment('Move deepwell plate (slot 4) to Station B for RNA \
 extraction.')
@@ -159,8 +165,8 @@ extraction.')
         if not os.path.isdir(folder_path):
             os.mkdir(folder_path)
         data = {
-            'tips1000': tip_log['count'][p1000],
-            'tips20': tip_log['count'][s20]
+            'tips1000': tip_log['count'][m300],
+            'tips20': tip_log['count'][m20]
         }
         with open(tip_file_path, 'w') as outfile:
             json.dump(data, outfile)
