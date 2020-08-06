@@ -142,7 +142,9 @@ resuming.')
     #         m300.dispense(500, source.bottom(h+20))
 
     pick_up(m300)
+    
     for i in range(math.ceil(NUM_SAMPLES/2)):
+        bbsrc = binding_buffer[i//(12//len(binding_buffer))]
         if NUM_SAMPLES % 2 != 0 and i == math.ceil(NUM_SAMPLES/2) - 1:
             dest_set = [dest_plate.wells()[NUM_SAMPLES-1]]
         else:
@@ -150,8 +152,8 @@ resuming.')
         for i in range(len(dest_set)):
             #h = h_track(BB_VOLUME, binding_buffer)
             if i == 0:
-                m300.mix(MIX_REPETITIONS, MIX_VOLUME, binding_buffer)
-            m300.aspirate(BB_VOLUME, binding_buffer)
+                m300.mix(MIX_REPETITIONS, MIX_VOLUME, bbsrc)
+            m300.aspirate(BB_VOLUME, bbsrc)
             m300.air_gap(20)
         for s in dest_set:
             m300.dispense(BB_VOLUME + 20, s)
