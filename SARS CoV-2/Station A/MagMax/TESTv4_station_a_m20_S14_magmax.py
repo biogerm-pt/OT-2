@@ -148,7 +148,7 @@ resuming.')
         else:
             dest_set = dest_plate.wells()[i*2:i*2+2]
         for i in range(len(dest_set)):
-            h = h_track(BB_VOLUME, binding_buffer)
+            #h = h_track(BB_VOLUME, binding_buffer)
             if i == 0:
                 m300.mix(MIX_REPETITIONS, MIX_VOLUME, binding_buffer.bottom(2))
             m300.aspirate(BB_VOLUME, binding_buffer.bottom(2))
