@@ -150,8 +150,8 @@ resuming.')
         for i in range(len(dest_set)):
             #h = h_track(BB_VOLUME, binding_buffer)
             if i == 0:
-                m300.mix(MIX_REPETITIONS, MIX_VOLUME, binding_buffer.bottom(2))
-            m300.aspirate(BB_VOLUME, binding_buffer.bottom(2))
+                m300.mix(MIX_REPETITIONS, MIX_VOLUME, binding_buffer)
+            m300.aspirate(BB_VOLUME, binding_buffer)
             m300.air_gap(20)
         for s in dest_set:
             m300.dispense(BB_VOLUME + 20, s)
