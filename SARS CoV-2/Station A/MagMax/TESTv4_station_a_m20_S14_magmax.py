@@ -16,7 +16,7 @@ TUBE50_VOlUME = 20
 
 BB_VOLUME = 412.5
 MIX_REPETITIONS = 3
-MIX_VOLUME = 500
+MIX_VOLUME = 300
 ICPK_VOlUME = 15
 TIP_TRACK = False
 
@@ -153,10 +153,19 @@ resuming.')
             #h = h_track(BB_VOLUME, binding_buffer)
             if i == 0:
                 m300.mix(MIX_REPETITIONS, MIX_VOLUME, bbsrc)
-            m300.aspirate(BB_VOLUME, bbsrc)
+            m300.aspirate(BB_VOLUME/2, bbsrc)
             m300.air_gap(20)
         for s in dest_set:
-            m300.dispense(BB_VOLUME + 20, s)
+            m300.dispense(BB_VOLUME/2 + 20, s)
+        for i in range(len(dest_set)):
+            #h = h_track(BB_VOLUME, binding_buffer)
+            if i == 0:
+                m300.mix(MIX_REPETITIONS, MIX_VOLUME, bbsrc)
+            m300.aspirate(BB_VOLUME/2, bbsrc)
+            m300.air_gap(20)
+        for s in dest_set:
+            m300.dispense(BB_VOLUME/2 + 20, s)
+
     m300.drop_tip()
 
     ctx.comment('Move deepwell plate (slot 4) to Station B for RNA \
