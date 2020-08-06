@@ -11,7 +11,7 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 11  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
+NUM_SAMPLES = 43  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
 ELUTION_VOL = 50
 STARTING_VOL = 485
 POOL = True
@@ -312,7 +312,7 @@ for 2 minutes')
 
     wash(500, wash1, 15, park=PARK)
     
-    m300.flow_rate.aspirate = 50
+    m300.flow_rate.aspirate = 94
 
     wash(500, etoh, 15, park=PARK)
     wash(500, etoh, 15, park=PARK)
