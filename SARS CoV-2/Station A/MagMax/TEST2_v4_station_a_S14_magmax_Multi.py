@@ -14,9 +14,9 @@ metadata = {
 NUM_SAMPLES = 28
 TUBE50_VOlUME = 20
 
-BB_VOLUME = 350
-MIX_REPETITIONS = 3
-MIX_VOLUME = 100
+BB_VOLUME = 427.5
+MIX_REPETITIONS = 4
+MIX_VOLUME = 200
 ICPK_VOlUME = 15
 TIP_TRACK = False
 
@@ -24,9 +24,9 @@ TIP_TRACK = False
 def run(ctx: protocol_api.ProtocolContext):
 
     # load labware
-    ic_pk = ctx.load_labware(
-        'opentrons_24_aluminumblock_nest_2ml_snapcap', '9',
-        'chilled tubeblock for internal control and proteinase K (strip 1)').wells()[0]
+    #ic_pk = ctx.load_labware(
+    #    'opentrons_24_aluminumblock_nest_2ml_snapcap', '9',
+    #    'chilled tubeblock for internal control and proteinase K (strip 1)').wells()[0]
     source_racks = [
         ctx.load_labware(
             'opentrons_24_tuberack_eppendorf_2ml_safelock_snapcap', slot,
@@ -44,18 +44,18 @@ def run(ctx: protocol_api.ProtocolContext):
     tipracks300 = [ctx.load_labware('opentrons_96_tiprack_300ul', slot,
                                      '300µl filter tiprack')
                     for slot in ['10', '7']]
-    tipracks20 = [ctx.load_labware('opentrons_96_filtertiprack_20ul', '6',
-                                   '20µl filter tiprack')]
+    #tipracks20 = [ctx.load_labware('opentrons_96_filtertiprack_20ul', '6',
+    #                               '20µl filter tiprack')]
 
     # load pipette
-    s20 = ctx.load_instrument('p20_single_gen2', 'left', tip_racks=tipracks20)
+    #s20 = ctx.load_instrument('p20_multi_gen2', 'left', tip_racks=tipracks20)
     m300 = ctx.load_instrument(
         'p300_multi_gen2', 'right', tip_racks=tipracks300)
 
     # setup samples
-    sources = [
-        well for rack in source_racks for well in rack.wells()][:NUM_SAMPLES]
-    dests_single = dest_plate.wells()[:NUM_SAMPLES]
+    #sources = [
+    #    well for rack in source_racks for well in rack.wells()][:NUM_SAMPLES]
+    #dests_single = dest_plate.wells()[:NUM_SAMPLES]
     num_cols = math.ceil(NUM_SAMPLES/8)
     dests_multi = dest_plate.rows()[0][:num_cols]
 
@@ -75,16 +75,17 @@ def run(ctx: protocol_api.ProtocolContext):
                 else:
                     tip_log['count'][s20] = 0
     else:
-        tip_log['count'] = {m300: 0, s20: 0}
+        tip_log['count'] = {m300: 0}
+        #tip_log['count'] = {m300: 0, s20: 0}
 
     tip_log['tips'] = {
         m300: [tip for rack in tipracks300 for tip in rack.wells()],
         #s20: [tip for rack in tipracks20 for tip in rack.rows()[0]]
-        s20: [tip for rack in tipracks20 for tip in rack.wells()]
+        #s20: [tip for rack in tipracks20 for tip in rack.wells()]
     }
     tip_log['max'] = {
         pip: len(tip_log['tips'][pip])
-        for pip in [m300, s20]
+        for pip in [m300]
     }
 
     def pick_up(pip):
@@ -110,9 +111,9 @@ resuming.')
     #         heights[tube] = min_h  # stop 5mm short of the bottom
     #     return heights[tube]
 
-    m300.flow_rate.aspirate = 94
-    m300.flow_rate.dispense = 94
-    m300.flow_rate.blow_out = 100
+    m300.flow_rate.aspirate = 40
+    m300.flow_rate.dispense = 40
+    #m300.flow_rate.blow_out = 100
 
 
  # # transfer internal control + proteinase K
@@ -148,7 +149,7 @@ resuming.')
         for i in range(num_trans):
             if i == 0:
                 m300.mix(MIX_REPETITIONS, MIX_VOLUME, source)
-            m300.transfer(vol_per_trans, source, m, air_gap=20, new_tip='never')
+            m300.transfer(vol_per_trans, source, m, air_gap=10, new_tip='never')
     m300.drop_tip()
 
     ctx.comment('Move deepwell plate (slot 4) to Station B for RNA \
@@ -160,7 +161,7 @@ extraction.')
             os.mkdir(folder_path)
         data = {
             'tips300': tip_log['count'][m300],
-            'tips20': tip_log['count'][s20]
+            #'tips20': tip_log['count'][s20]
         }
         with open(tip_file_path, 'w') as outfile:
             json.dump(data, outfile)
