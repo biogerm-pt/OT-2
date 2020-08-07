@@ -6,14 +6,14 @@ import threading
 from time import sleep
 
 metadata = {
-    'protocolName': 'Version 2 S30 Station B MagMax (200µl sample input)',
+    'protocolName': 'USO_v3_station_b_M300_Pool_magmax',
     'author': 'Nick <ndiehl@opentrons.com',
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 11  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
+NUM_SAMPLES = 28  # start with 8 samples, slowly increase to 48, then 94 (max is 64)
 ELUTION_VOL = 50
-STARTING_VOL = 485
+STARTING_VOL = 500
 POOL = True
 TIP_TRACK = False
 PARK = True
@@ -55,7 +55,7 @@ def run(ctx):
         parkingrack = ctx.load_labware(
             'opentrons_96_tiprack_300ul', '7', 'empty tiprack for parking')
         if POOL:
-            parking_spots = parkingrack.rows()[0][:5]
+            parking_spots = parkingrack.rows()[0]
         else:
             parking_spots = parkingrack.rows()[0][:num_cols]
     else:
@@ -70,7 +70,7 @@ def run(ctx):
     magdeck.disengage()
     magheight = 13.7
     magplate = magdeck.load_labware('nest_96_wellplate_2ml_deep')
-    #magplate = magdeck.load_labware('biorad_96_wellplate_200ul_pcr')
+    # magplate = magdeck.load_labware('biorad_96_wellplate_200ul_pcr')
     tempdeck = ctx.load_module('Temperature Module Gen2', '1')
     flatplate = tempdeck.load_labware(
                 'opentrons_96_aluminumblock_nest_wellplate_100ul',)
@@ -84,8 +84,8 @@ def run(ctx):
     elution_solution = res1.wells()[-1]
 
     if POOL:
-        mag_samples_m = magplate.rows()[0][:3] + magplate.rows()[0][8:10]
-        elution_samples_m = flatplate.rows()[0][:3] + flatplate.rows()[0][8:10]
+        mag_samples_m = magplate.rows()[0][:num_cols] + magplate.rows()[0][8:8+math.ceil(num_cols/2)]
+        elution_samples_m = flatplate.rows()[0][:num_cols] + flatplate.rows()[0][8:8+math.ceil(num_cols/2)]
     else:
         mag_samples_m = magplate.rows()[0][:num_cols]
         elution_samples_m = flatplate.rows()[0][:num_cols]
@@ -132,7 +132,7 @@ resuming.')
 
     switch = True
     drop_count = 0
-    drop_threshold = 240  # number of tips trash will accommodate before prompting user to empty
+    drop_threshold = 120  # number of tips trash will accommodate before prompting user to empty
 
     def drop(pip):
         nonlocal switch
@@ -306,8 +306,12 @@ for 2 minutes')
     ctx.delay(minutes=2, msg='Incubating on MagDeck for 2 minutes.')
 
     # remove initial supernatant
-    remove_supernatant(500, park=PARK)
+    remove_supernatant(STARTING_VOL, park=PARK)
+
+    m300.flow_rate.aspirate = 50
     wash(500, wash1, 15, park=PARK)
+    m300.flow_rate.aspirate = 94
+
     wash(500, etoh, 15, park=PARK)
     wash(500, etoh, 15, park=PARK)
 
