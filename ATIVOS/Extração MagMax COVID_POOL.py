@@ -6,14 +6,14 @@ import threading
 from time import sleep
 
 metadata = {
-    'protocolName': 'USO_v2_station_b_S30_Pool_magmax_200ulinput',
+    'protocolName': 'TEST3_v3_station_b_S30_Pool_magmax',
     'author': 'Nick <ndiehl@opentrons.com',
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 11  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
+NUM_SAMPLES = 28  # start with 8 samples, slowly increase to 48, then 94 (max is 64)
 ELUTION_VOL = 50
-STARTING_VOL = 485
+STARTING_VOL = 500
 POOL = True
 TIP_TRACK = False
 PARK = True
@@ -55,7 +55,7 @@ def run(ctx):
         parkingrack = ctx.load_labware(
             'opentrons_96_tiprack_300ul', '7', 'empty tiprack for parking')
         if POOL:
-            parking_spots = parkingrack.rows()[0][:5]
+            parking_spots = parkingrack.rows()[0]
         else:
             parking_spots = parkingrack.rows()[0][:num_cols]
     else:
@@ -306,8 +306,12 @@ for 2 minutes')
     ctx.delay(minutes=2, msg='Incubating on MagDeck for 2 minutes.')
 
     # remove initial supernatant
-    remove_supernatant(500, park=PARK)
+    remove_supernatant(STARTING_VOL, park=PARK)
+
+    m300.flow_rate.aspirate = 50
     wash(500, wash1, 15, park=PARK)
+    m300.flow_rate.aspirate = 94
+
     wash(500, etoh, 15, park=PARK)
     wash(500, etoh, 15, park=PARK)
 
