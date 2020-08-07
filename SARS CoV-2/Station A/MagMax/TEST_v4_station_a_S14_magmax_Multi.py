@@ -11,10 +11,14 @@ metadata = {
     'apiLevel': '2.0'
 }
 
+<<<<<<< HEAD:SARS CoV-2/Station A/MagMax/TEST_v4_station_a_S14_magmax_P300_20Multi.py
 NUM_SAMPLES = 4
+=======
+NUM_SAMPLES = 96
+>>>>>>> 0d62001f2d61f23a38e79ae1e7597872993a8c5e:SARS CoV-2/Station A/MagMax/TESTv4_station_a_m20_S14_magmax.py
 TUBE50_VOlUME = 20
 
-BB_VOLUME = 412.5
+BB_VOLUME = 350
 MIX_REPETITIONS = 3
 MIX_VOLUME = 100
 ICPK_VOlUME = 15
