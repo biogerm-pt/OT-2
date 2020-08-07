@@ -5,13 +5,13 @@ import math
 
 # metadata
 metadata = {
-    'protocolName': 'Version 1 S14 Station C Thermo Taqpath P20 Multi',
+    'protocolName': 'USO_v1_station_c_S14_taqpath_m20_3imp.py',
     'author': 'Nick <protocols@opentrons.com>',
     'source': 'Custom Protocol Request',
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 11  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
+NUM_SAMPLES = 34  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
 SAMPLE_VOL = 10
 PREPARE_MASTERMIX = True
 TIP_TRACK = False

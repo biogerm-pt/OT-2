@@ -5,7 +5,7 @@ import math
 
 # metadata
 metadata = {
-    'protocolName': 'V3 S14 Station A MagMax',
+    'protocolName': 'USO_v5_station_a_S14_magmax_Multi',
     'author': 'Nick <protocols@opentrons.com>',
     'source': 'Custom Protocol Request',
     'apiLevel': '2.0'

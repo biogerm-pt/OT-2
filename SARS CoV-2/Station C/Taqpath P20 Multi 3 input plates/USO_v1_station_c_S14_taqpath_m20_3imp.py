@@ -5,7 +5,7 @@ import math
 
 # metadata
 metadata = {
-    'protocolName': 'Version 1 S14 Station C Thermo Taqpath P20 Multi',
+    'protocolName': 'USO_v1_station_c_S14_taqpath_m20_3imp.py',
     'author': 'Nick <protocols@opentrons.com>',
     'source': 'Custom Protocol Request',
     'apiLevel': '2.3'
