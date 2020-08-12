@@ -50,7 +50,7 @@ def run(ctx: protocol_api.ProtocolContext):
     # load pipette
     #s20 = ctx.load_instrument('p20_multi_gen2', 'left', tip_racks=tipracks20)
     m300 = ctx.load_instrument(
-        'p300_multi_gen2', 'right', tip_racks=tipracks300)
+        'p300_multi_gen2', 'left', tip_racks=tipracks300)
 
     # setup samples
     #sources = [

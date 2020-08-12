@@ -296,10 +296,15 @@ for 2 minutes')
     ctx.delay(minutes=2, msg='Incubating on MagDeck for 2 minutes.')
 
     # remove initial supernatant
+    
+    m300.flow_rate.aspirate = 50
     remove_supernatant(500, park=PARK)
     wash(500, wash1, 15, park=PARK)
+    #m300.flow_rate.aspirate = 94
+
     wash(500, etoh, 15, park=PARK)
     wash(500, etoh, 15, park=PARK)
+
 
     magdeck.disengage()
     ctx.delay(minutes=5, msg='Airdrying beads at room temperature for 5 \
