@@ -187,7 +187,7 @@ resuming.')
                 pick_up(m300)
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = 1 if side_ind % 2 == 0 else -1
-            loc = m.bottom(0.5).move(Point(x=side*3))
+            loc = m.bottom(0.5).move(Point(x=side*2.5)) # mudei de 3
             for _ in range(num_trans):
                 waste_track(vol_per_trans)
                 if m300.current_volume > 0:
@@ -198,7 +198,7 @@ resuming.')
                 m300.blow_out(waste)
                 m300.air_gap(20)
             drop(m300)
-        m300.flow_rate.aspirate = 150
+        m300.flow_rate.aspirate = 50  # mudei de 150
 
     # def bind(vol, park=True):
     #     # add bead binding buffer and mix samples
@@ -243,7 +243,7 @@ resuming.')
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = -1 if side_ind % 2 == 0 else 1
             pick_up(m300)
-            loc = m.bottom(0.5).move(Point(x=side*3))
+            loc = m.bottom(0.5).move(Point(x=side*2.5)) # mudei de 3
             src = source[i//(12//len(source))]
             for n in range(num_trans):
                 if m300.current_volume > 0:
@@ -271,7 +271,7 @@ resuming.')
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = -1 if side_ind % 2 == 0 else 1
             pick_up(m300)
-            loc = m.bottom(0.5).move(Point(x=side*3))
+            loc = m.bottom(0.5).move(Point(x=side*2.5)) # mudei de 3
             m300.aspirate(vol, elution_solution)
             m300.move_to(m.center())
             m300.dispense(vol, loc)
@@ -296,7 +296,7 @@ for 2 minutes')
                 pick_up(m300)
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = 1 if side_ind % 2 == 0 else -1
-            loc = m.bottom(0.5).move(Point(x=side*3))
+            loc = m.bottom(0.5).move(Point(x=side*2.5))  # mudei de 3
             m300.transfer(40, loc, e.bottom(5), air_gap=20, new_tip='never')
             m300.blow_out(e.top(-2))
             m300.air_gap(20)
