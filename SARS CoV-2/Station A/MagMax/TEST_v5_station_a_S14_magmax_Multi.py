@@ -150,6 +150,7 @@ resuming.')
             if i == 0:
                 m300.mix(MIX_REPETITIONS, MIX_VOLUME, source)
             #m300.transfer(vol_per_trans, source, m, air_gap=8, new_tip='never')
+            m300.blow_out()
             m300.aspirate(vol_per_trans, source)
             m300.air_gap(20)
             ctx.delay(seconds=2)
@@ -157,7 +158,6 @@ resuming.')
             ctx.delay(seconds=1)
             m300.default_speed = 100
             m300.dispense(vol_per_trans, m )
-            m300.blow_out()
             m300.default_speed = 400
         
 
