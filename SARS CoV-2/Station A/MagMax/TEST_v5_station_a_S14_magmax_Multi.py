@@ -151,9 +151,9 @@ resuming.')
                 m300.mix(MIX_REPETITIONS, MIX_VOLUME, source)
             #m300.transfer(vol_per_trans, source, m, air_gap=8, new_tip='never')
             m300.aspirate(vol_per_trans, source)
-            m300.air_gap(5)
+            m300.air_gap(15)
             ctx.delay(seconds=2, msg='eliminar escorrido.')
-            m300.touch_tip()
+            m300.dispense(5, source )
             m300.default_speed = 100
             m300.dispense(vol_per_trans, m )
             m300.default_speed = 400
