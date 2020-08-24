@@ -13,7 +13,8 @@ metadata = {
 
 NUM_SAMPLES = 28  # start with 8 samples, slowly increase to 48, then 94 (max is 64)
 ELUTION_VOL = 50
-STARTING_VOL = 500
+STARTING_VOL = 800
+WASH_VOL = 500
 POOL = True
 TIP_TRACK = False
 PARK = True
@@ -187,7 +188,7 @@ resuming.')
                 pick_up(m300)
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = 1 if side_ind % 2 == 0 else -1
-            loc = m.bottom(0.5).move(Point(x=side*2.5)) # mudei de 3
+            loc = m.bottom(0.8).move(Point(x=side*2.5)) # mudei de 0.5>0.8  3>2.5
             for _ in range(num_trans):
                 waste_track(vol_per_trans)
                 if m300.current_volume > 0:
@@ -243,7 +244,7 @@ resuming.')
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = -1 if side_ind % 2 == 0 else 1
             pick_up(m300)
-            loc = m.bottom(0.5).move(Point(x=side*2.5)) # mudei de 3
+            loc = m.bottom(0.8).move(Point(x=side*2.5)) # mudei de 0.5>0.8  3>2.5
             src = source[i//(12//len(source))]
             for n in range(num_trans):
                 if m300.current_volume > 0:
@@ -271,7 +272,7 @@ resuming.')
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = -1 if side_ind % 2 == 0 else 1
             pick_up(m300)
-            loc = m.bottom(0.5).move(Point(x=side*2.5)) # mudei de 3
+            loc = m.bottom(0.8).move(Point(x=side*2.5)) # mudei de 0.5>0.8  3>2.5
             m300.aspirate(vol, elution_solution)
             m300.move_to(m.center())
             m300.dispense(vol, loc)
@@ -296,7 +297,7 @@ for 2 minutes')
                 pick_up(m300)
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = 1 if side_ind % 2 == 0 else -1
-            loc = m.bottom(0.5).move(Point(x=side*2.5))  # mudei de 3
+            loc = m.bottom(0.8).move(Point(x=side*2.5))  # mudei de 0.5>0.8  3>2.5
             m300.transfer(40, loc, e.bottom(5), air_gap=20, new_tip='never')
             m300.blow_out(e.top(-2))
             m300.air_gap(20)
@@ -308,11 +309,11 @@ for 2 minutes')
     # remove initial supernatant
 
     m300.flow_rate.aspirate = 50
-    remove_supernatant(500, park=PARK)
-    wash(500, wash1, 15, park=PARK)
+    remove_supernatant(STARTING_VOL, park=PARK)
+    wash(WASH_VOL, wash1, 15, park=PARK)
     #m300.flow_rate.aspirate = 94
-    wash(500, etoh, 15, park=PARK)
-    wash(500, etoh, 15, park=PARK)
+    wash(WASH_VOL, etoh, 15, park=PARK)
+    wash(WASH_VOL, etoh, 15, park=PARK)
 
     magdeck.disengage()
     ctx.delay(minutes=5, msg='Airdrying beads at room temperature for 5 \
