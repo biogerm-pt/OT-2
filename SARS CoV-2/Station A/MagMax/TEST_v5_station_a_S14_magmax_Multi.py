@@ -156,7 +156,7 @@ resuming.')
             m300.dispense(5, source.top() )
             m300.default_speed = 100
             m300.dispense(vol_per_trans, m )
-            m300.blopw_out()
+            m300.blow_out()
             m300.default_speed = 400
         
 
