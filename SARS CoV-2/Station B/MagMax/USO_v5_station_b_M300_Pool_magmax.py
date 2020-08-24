@@ -249,7 +249,7 @@ resuming.')
             for n in range(num_trans):
                 if m300.current_volume > 0:
                     m300.dispense(m300.current_volume, src.top())
-                m300.transfer(vol_per_trans, src, m.top(), air_gap=20,
+                m300.transfer(vol_per_trans, src.bottom(0.8), m.top(), air_gap=20,
                               new_tip='never')
                 if n < num_trans - 1:  # only air_gap if going back to source
                     m300.air_gap(20)
