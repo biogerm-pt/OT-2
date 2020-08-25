@@ -5,7 +5,7 @@ import math
 
 # metadata
 metadata = {
-    'protocolName': 'USO_v5_station_a_S14_magmax_Multi',
+    'protocolName': 'USO_v6_station_a_S14_magmax_Multi',
     'author': 'Nick <protocols@opentrons.com>',
     'source': 'Custom Protocol Request',
     'apiLevel': '2.0'
@@ -16,7 +16,7 @@ TUBE50_VOlUME = 20
 
 BB_VOLUME = 427.5
 MIX_REPETITIONS = 4
-MIX_VOLUME = 200
+MIX_VOLUME = 180
 ICPK_VOlUME = 15
 TIP_TRACK = False
 
@@ -150,12 +150,12 @@ resuming.')
             if i == 0:
                 m300.mix(MIX_REPETITIONS, MIX_VOLUME, source)
             #m300.transfer(vol_per_trans, source, m, air_gap=8, new_tip='never')
-            m300.blow_out()
+            #m300.blow_out()
             m300.aspirate(vol_per_trans, source)
-            m300.air_gap(12)
+            m300.air_gap(7)
             ctx.delay(seconds=3)
-            m300.dispense(10, source.top() )
-            ctx.delay(seconds=2)
+            #m300.dispense(10, source.top() )
+            #ctx.delay(seconds=2)
             m300.default_speed = 100
             m300.dispense(vol_per_trans, m )
             m300.blow_out()
