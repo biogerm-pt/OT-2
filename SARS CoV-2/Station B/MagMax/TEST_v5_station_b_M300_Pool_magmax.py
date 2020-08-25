@@ -351,5 +351,5 @@ for 2 minutes')
     magdeck.disengage()
     ctx.delay(minutes=5, msg='Airdrying beads at room temperature for 5 \
 minutes.')
-
+    m300.flow_rate.aspirate = 50
     elute(ELUTION_VOL, park=PARK)
