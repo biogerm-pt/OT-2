@@ -13,7 +13,7 @@ metadata = {
 
 NUM_SAMPLES = 28  # start with 8 samples, slowly increase to 48, then 94 (max is 64)
 ELUTION_VOL = 50
-STARTING_VOL = 800
+STARTING_VOL = 600
 WASH_VOL = 500
 POOL = True
 TIP_TRACK = False
@@ -240,6 +240,7 @@ resuming.')
 
         num_trans = math.ceil(wash_vol/200)
         vol_per_trans = wash_vol/num_trans
+        wash_vol_rem = wash_vol
         for i, (m, spot) in enumerate(zip(mag_samples_m, parking_spots)):
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = -1 if side_ind % 2 == 0 else 1
@@ -264,7 +265,7 @@ resuming.')
         magdeck.engage(height=magheight)
         ctx.delay(minutes=5, msg='Incubating on MagDeck for 5 minutes.')
 
-        remove_supernatant(wash_vol, park=park)
+        remove_supernatant(wash_vol_rem, park=park)
 
     def wash_etoh(wash_etoh_vol, source_etoh, mix_reps_etoh, park=True):
         magdeck.disengage()
