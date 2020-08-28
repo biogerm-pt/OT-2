@@ -195,9 +195,9 @@ resuming.')
                     m300.dispense(m300.current_volume, m.top())  # void air gap if necessary
                 m300.move_to(m.center())
                 m300.transfer(vol_per_trans, loc, waste, new_tip='never',
-                              air_gap=20)
+                              air_gap=10)
                 m300.blow_out(waste)
-                m300.air_gap(20)
+                m300.air_gap(10)
             drop(m300)
         m300.flow_rate.aspirate = 50  # mudei de 150
 
