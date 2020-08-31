@@ -6,14 +6,16 @@ import threading
 from time import sleep
 
 metadata = {
-    'protocolName': 'Version 1 S14 Station B MagMax (200µl sample input)',
+    'protocolName': 'USO_v6_station_b_M300_Pool_magmax',
     'author': 'Nick <ndiehl@opentrons.com',
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 96  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
+NUM_SAMPLES = 42 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
 ELUTION_VOL = 50
-STARTING_VOL = 485
+STARTING_VOL = 530
+WASH_VOL = 500
+POOL = False
 TIP_TRACK = False
 PARK = True
 
@@ -44,7 +46,7 @@ def create_thread(ctx, cancel_token):
 # Start protocol
 def run(ctx):
     # Setup for flashing lights notification to empty trash
-    cancellationToken = CancellationToken()
+    # cancellationToken = CancellationToken()
 
     # load labware and pipettes
     num_cols = math.ceil(NUM_SAMPLES/8)
@@ -53,7 +55,10 @@ def run(ctx):
     if PARK:
         parkingrack = ctx.load_labware(
             'opentrons_96_tiprack_300ul', '7', 'empty tiprack for parking')
-        parking_spots = parkingrack.rows()[0][:num_cols]
+        if POOL:
+            parking_spots = parkingrack.rows()[0]
+        else:
+            parking_spots = parkingrack.rows()[0][:num_cols]
     else:
         tips300.insert(0, ctx.load_labware('opentrons_96_tiprack_300ul', '7',
                                            '200µl filtertiprack'))
@@ -79,8 +84,12 @@ def run(ctx):
     wash1 = res1.wells()[:4]
     elution_solution = res1.wells()[-1]
 
-    mag_samples_m = magplate.rows()[0][:num_cols]
-    elution_samples_m = flatplate.rows()[0][:num_cols]
+    if POOL:
+        mag_samples_m = magplate.rows()[0][:num_cols] + magplate.rows()[0][8:8+math.ceil(num_cols/2)]
+        elution_samples_m = flatplate.rows()[0][:num_cols] + flatplate.rows()[0][8:8+math.ceil(num_cols/2)]
+    else:
+        mag_samples_m = magplate.rows()[0][:num_cols]
+        elution_samples_m = flatplate.rows()[0][:num_cols]
 
     magdeck.disengage()  # just in case
     tempdeck.set_temperature(4)
@@ -137,15 +146,15 @@ resuming.')
         drop_count += 8
         if drop_count == drop_threshold:
             # Setup for flashing lights notification to empty trash
-            if not ctx._hw_manager.hardware.is_simulator:
-                cancellationToken.set_true()
-            thread = create_thread(ctx, cancellationToken)
+            # if not ctx._hw_manager.hardware.is_simulator:
+            #     cancellationToken.set_true()
+            # thread = create_thread(ctx, cancellationToken)
             m300.home()
             ctx.pause('Please empty tips from waste before resuming.')
 
             ctx.home()  # home before continuing with protocol
-            cancellationToken.set_false()  # stop light flashing after home
-            thread.join()
+            # cancellationToken.set_false()  # stop light flashing after home
+            # thread.join()
             drop_count = 0
 
     waste_vol = 0
@@ -155,42 +164,42 @@ resuming.')
 
         def waste_track(vol):
             nonlocal waste_vol
-            print(waste_vol)
             if waste_vol + vol >= waste_threshold:
                 # Setup for flashing lights notification to empty liquid waste
-                if not ctx._hw_manager.hardware.is_simulator:
-                    cancellationToken.set_true()
-                thread = create_thread(ctx, cancellationToken)
+                # if not ctx._hw_manager.hardware.is_simulator:
+                #     cancellationToken.set_true()
+                # thread = create_thread(ctx, cancellationToken)
                 m300.home()
                 ctx.pause('Please empty liquid waste (slot 11) before resuming.')
 
                 ctx.home()  # home before continuing with protocol
-                cancellationToken.set_false() # stop light flashing after home
-                thread.join()
+                # cancellationToken.set_false() # stop light flashing after home
+                # thread.join()
                 waste_vol = 0
             waste_vol += vol
 
         m300.flow_rate.aspirate = 30
         num_trans = math.ceil(vol/200)
         vol_per_trans = vol/num_trans
-        for i, (m, spot) in enumerate(zip(mag_samples_m, parking_spots)):
+        for m, spot in zip(mag_samples_m, parking_spots):
             if park:
                 pick_up(m300, spot)
             else:
                 pick_up(m300)
-            side = -1 if i % 2 == 0 else 1
-            loc = m.bottom(0.5).move(Point(x=side*2))
+            side_ind = int(m.display_name.split(' ')[0][1:])
+            side = 1 if side_ind % 2 == 0 else -1
+            loc = m.bottom(0.8).move(Point(x=side*2.5)) # mudei de 0.5>0.8  3>2.5
             for _ in range(num_trans):
                 waste_track(vol_per_trans)
                 if m300.current_volume > 0:
                     m300.dispense(m300.current_volume, m.top())  # void air gap if necessary
                 m300.move_to(m.center())
                 m300.transfer(vol_per_trans, loc, waste, new_tip='never',
-                              air_gap=20)
-                m300.blow_out(waste)
-                m300.air_gap(20)
+                              air_gap=10)
+                #m300.blow_out(waste)
+                m300.air_gap(10)
             drop(m300)
-        m300.flow_rate.aspirate = 150
+        m300.flow_rate.aspirate = 50  # mudei de 150
 
     # def bind(vol, park=True):
     #     # add bead binding buffer and mix samples
@@ -231,15 +240,17 @@ resuming.')
 
         num_trans = math.ceil(wash_vol/200)
         vol_per_trans = wash_vol/num_trans
+        wash_vol_rem = wash_vol
         for i, (m, spot) in enumerate(zip(mag_samples_m, parking_spots)):
+            side_ind = int(m.display_name.split(' ')[0][1:])
+            side = -1 if side_ind % 2 == 0 else 1
             pick_up(m300)
-            side = 1 if i % 2 == 0 else -1
-            loc = m.bottom(0.5).move(Point(x=side*2))
+            loc = m.bottom(0.8).move(Point(x=side*2.5)) # mudei de 0.5>0.8  3>2.5
             src = source[i//(12//len(source))]
             for n in range(num_trans):
                 if m300.current_volume > 0:
                     m300.dispense(m300.current_volume, src.top())
-                m300.transfer(vol_per_trans, src, m.top(), air_gap=20,
+                m300.transfer(vol_per_trans, src.bottom(0.8), m.top(), air_gap=20,
                               new_tip='never')
                 if n < num_trans - 1:  # only air_gap if going back to source
                     m300.air_gap(20)
@@ -254,14 +265,48 @@ resuming.')
         magdeck.engage(height=magheight)
         ctx.delay(minutes=5, msg='Incubating on MagDeck for 5 minutes.')
 
-        remove_supernatant(wash_vol, park=park)
+        remove_supernatant(wash_vol_rem, park=park)
+
+    def wash_etoh(wash_etoh_vol, source_etoh, mix_reps_etoh, park=True):
+        magdeck.disengage()
+
+        num_trans = math.ceil(wash_etoh_vol/200)
+        vol_per_trans = wash_etoh_vol/num_trans
+        for i, (m, spot) in enumerate(zip(mag_samples_m, parking_spots)):
+            side_ind = int(m.display_name.split(' ')[0][1:])
+            side = -1 if side_ind % 2 == 0 else 1
+            pick_up(m300)
+            loc = m.bottom(0.5).move(Point(x=side*2.5)) # mudei de 0.5  3>2.5
+            src = source_etoh[i//(12//len(source_etoh))]
+            for n in range(num_trans):
+                if m300.current_volume > 0:
+                    m300.dispense(m300.current_volume, src.top())
+                m300.transfer(vol_per_trans, src.bottom(0.8), m.top(), air_gap=20,
+                              new_tip='never')
+                if n < num_trans - 1:  # only air_gap if going back to source_etoh
+                    m300.air_gap(20)
+            m300.mix(mix_reps_etoh, 150, loc)
+            m300.blow_out(m.top())
+            m300.air_gap(20)
+            if park:
+                m300.drop_tip(spot)
+            else:
+                drop(m300)
+
+        magdeck.engage(height=magheight)
+        ctx.delay(minutes=5, msg='Incubating on MagDeck for 5 minutes.')
+
+        remove_supernatant(wash_etoh_vol, park=park)
+
+
 
     def elute(vol, park=True):
         # resuspend beads in elution
-        for i, (m, spot) in enumerate(zip(mag_samples_m, parking_spots)):
+        for m, spot in zip(mag_samples_m, parking_spots):
+            side_ind = int(m.display_name.split(' ')[0][1:])
+            side = -1 if side_ind % 2 == 0 else 1
             pick_up(m300)
-            side = 1 if i % 2 == 0 else -1
-            loc = m.bottom(0.5).move(Point(x=side*2))
+            loc = m.bottom(0.8).move(Point(x=side*2.5)) # mudei de 0.5>0.8  3>2.5
             m300.aspirate(vol, elution_solution)
             m300.move_to(m.center())
             m300.dispense(vol, loc)
@@ -279,14 +324,14 @@ for 2 minutes')
         ctx.delay(minutes=2, msg='Incubating on magnet at room temperature \
 for 2 minutes')
 
-        for i, (m, e, spot) in enumerate(
-                zip(mag_samples_m, elution_samples_m, parking_spots)):
+        for m, e, spot in zip(mag_samples_m, elution_samples_m, parking_spots):
             if park:
                 pick_up(m300, spot)
             else:
                 pick_up(m300)
-            side = -1 if i % 2 == 0 else 1
-            loc = m.bottom(0.5).move(Point(x=side*2))
+            side_ind = int(m.display_name.split(' ')[0][1:])
+            side = 1 if side_ind % 2 == 0 else -1
+            loc = m.bottom(0.8).move(Point(x=side*2.5))  # mudei de 0.5>0.8  3>2.5
             m300.transfer(40, loc, e.bottom(5), air_gap=20, new_tip='never')
             m300.blow_out(e.top(-2))
             m300.air_gap(20)
@@ -296,18 +341,16 @@ for 2 minutes')
     ctx.delay(minutes=2, msg='Incubating on MagDeck for 2 minutes.')
 
     # remove initial supernatant
-    
+
     m300.flow_rate.aspirate = 50
-    remove_supernatant(500, park=PARK)
-    wash(500, wash1, 15, park=PARK)
+    remove_supernatant(STARTING_VOL, park=PARK)
+    wash(WASH_VOL, wash1, 15, park=PARK)
     #m300.flow_rate.aspirate = 94
-
-    wash(500, etoh, 15, park=PARK)
-    wash(500, etoh, 15, park=PARK)
-
+    wash_etoh(WASH_VOL, etoh, 15, park=PARK)
+    wash_etoh(WASH_VOL, etoh, 15, park=PARK)
 
     magdeck.disengage()
     ctx.delay(minutes=5, msg='Airdrying beads at room temperature for 5 \
 minutes.')
-
+    m300.flow_rate.aspirate = 50
     elute(ELUTION_VOL, park=PARK)
