@@ -6,7 +6,7 @@
 
 # Change this to what you want your OT-2's new display name to be.
 # For example: NEW_DISPLAY_NAME = ""
-NEW_DISPLAY_NAME = "Queen"
+NEW_DISPLAY_NAME = "The Cure"
 
 from opentrons import robot
 import os

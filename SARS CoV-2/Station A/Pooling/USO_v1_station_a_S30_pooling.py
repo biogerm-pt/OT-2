@@ -20,8 +20,8 @@ def run(ctx: protocol_api.ProtocolContext):
 
     # load labware
     dest_plate = ctx.load_labware(
-        'nest_96_wellplate_2ml_deep', '2', '96-deepwell sample plate')
-    tipracks1000 = [ctx.load_labware('opentrons_96_filtertiprack_1000ul', '1',
+        'nest_96_wellplate_2ml_deep', '9', '96-deepwell sample plate')
+    tipracks1000 = [ctx.load_labware('opentrons_96_filtertiprack_1000ul', '8',
                                      '1000µl filter tiprack')]
 
     # load pipette
