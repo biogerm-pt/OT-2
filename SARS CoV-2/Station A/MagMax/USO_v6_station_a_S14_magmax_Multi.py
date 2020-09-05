@@ -153,13 +153,13 @@ resuming.')
             #m300.blow_out()
             m300.aspirate(vol_per_trans, source)
             m300.air_gap(7)
-            ctx.delay(seconds=3)
+            ctx.delay(seconds=4)
             #m300.dispense(10, source.top() )
             #ctx.delay(seconds=2)
             m300.default_speed = 100
             m300.dispense(vol_per_trans, m )
-            m300.blow_out()
-            m300.default_speed = 400
+            #m300.blow_out()
+            #m300.default_speed = 400
         
 
     m300.drop_tip()
