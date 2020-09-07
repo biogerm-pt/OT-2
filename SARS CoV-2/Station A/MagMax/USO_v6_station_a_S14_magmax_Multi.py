@@ -158,7 +158,7 @@ resuming.')
             #ctx.delay(seconds=2)
             m300.default_speed = 100
             m300.dispense(vol_per_trans, m )
-            #m300.blow_out()
+            m300.blow_out()
             #m300.default_speed = 400
         
 
