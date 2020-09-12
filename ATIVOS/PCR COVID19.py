@@ -98,7 +98,7 @@ resuming.')
         }
     }
 
-    vol_overage = 1.2 if NUM_SAMPLES > 48 else 1.1  # decrease overage for small sample number
+    vol_overage = 1.1 if NUM_SAMPLES > 48 else 1.1  # decrease overage for small sample number
     total_mm_vol = mm_dict['volume']*(NUM_SAMPLES+2)*vol_overage
     # translate total mastermix volume to starting height
     r = mm_tube.diameter/2
@@ -111,7 +111,7 @@ resuming.')
         return mm_tube.bottom(mm_height)
 
     if PREPARE_MASTERMIX:
-        vol_overage = 1.2 if NUM_SAMPLES > 48 else 1.1
+        vol_overage = 1.1 if NUM_SAMPLES > 48 else 1.1
 
         for i, (tube, vol) in enumerate(mm_dict['components'].items()):
             comp_vol = vol*(NUM_SAMPLES)*vol_overage
