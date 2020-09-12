@@ -11,9 +11,9 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 42 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
+NUM_SAMPLES = 4 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
 ELUTION_VOL = 50
-STARTING_VOL = 530
+STARTING_VOL = 580
 WASH_VOL = 500
 POOL = False
 TIP_TRACK = False

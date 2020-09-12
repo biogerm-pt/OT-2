@@ -48,7 +48,7 @@ def run(ctx: protocol_api.ProtocolContext):
                                    '20µl filter tiprack')]
 
     # load pipette
-    s20 = ctx.load_instrument('p20_single_gen2', 'left', tip_racks=tipracks20)
+    #s20 = ctx.load_instrument('p20_single_gen2', 'left', tip_racks=tipracks20)
     p1000 = ctx.load_instrument(
         'p1000_single_gen2', 'right', tip_racks=tipracks1000)
 
@@ -70,21 +70,21 @@ def run(ctx: protocol_api.ProtocolContext):
                     tip_log['count'][p1000] = data['tips1000']
                 else:
                     tip_log['count'][p1000] = 0
-                if 'tips20' in data:
-                    tip_log['count'][s20] = data['tips20']
-                else:
-                    tip_log['count'][s20] = 0
+                #if 'tips20' in data:
+                #    tip_log['count'][s20] = data['tips20']
+                #else:
+                #    tip_log['count'][s20] = 0
     else:
-        tip_log['count'] = {p1000: 0, s20: 0}
+        tip_log['count'] = {p1000: 0} #, s20: 0}
 
     tip_log['tips'] = {
         p1000: [tip for rack in tipracks1000 for tip in rack.wells()],
         #s20: [tip for rack in tipracks20 for tip in rack.rows()[0]]
-        s20: [tip for rack in tipracks20 for tip in rack.wells()]
+        #s20: [tip for rack in tipracks20 for tip in rack.wells()]
     }
     tip_log['max'] = {
         pip: len(tip_log['tips'][pip])
-        for pip in [p1000, s20]
+        for pip in [p1000]#, s20]
     }
 
     def pick_up(pip):
@@ -116,13 +116,13 @@ resuming.')
 
 
   # transfer internal control + proteinase K
-    pick_up(s20)
-    for d in dests_single:
-        s20.dispense(10, ic_pk.bottom(2))
-        s20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(2), air_gap=5,
-                     new_tip='never')
-        s20.air_gap(5)
-    s20.drop_tip()
+  #  pick_up(s20)
+  #  for d in dests_single:
+  #      s20.dispense(10, ic_pk.bottom(2))
+  #       s20.transfer(ICPK_VOlUME, ic_pk.bottom(2), d.bottom(2), air_gap=5,
+  #                   new_tip='never')
+  #      s20.air_gap(5)
+  #  s20.drop_tip()
 
 
     # # transfer binding buffer and mix
@@ -165,7 +165,7 @@ extraction.')
             os.mkdir(folder_path)
         data = {
             'tips1000': tip_log['count'][p1000],
-            'tips20': tip_log['count'][s20]
+            #'tips20': tip_log['count'][s20]
         }
         with open(tip_file_path, 'w') as outfile:
             json.dump(data, outfile)

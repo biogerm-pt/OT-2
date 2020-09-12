@@ -11,9 +11,9 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 42 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
+NUM_SAMPLES = 35 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
 ELUTION_VOL = 50
-STARTING_VOL = 530
+STARTING_VOL = 580
 WASH_VOL = 500
 POOL = True
 TIP_TRACK = False
@@ -195,7 +195,7 @@ resuming.')
                     m300.dispense(m300.current_volume, m.top())  # void air gap if necessary
                 m300.move_to(m.center())
                 m300.transfer(vol_per_trans, loc, waste, new_tip='never',
-                              air_gap=10)
+                              air_gap=7)
                 #m300.blow_out(waste)
                 m300.air_gap(10)
             drop(m300)

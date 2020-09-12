@@ -11,7 +11,7 @@ metadata = {
     'apiLevel': '2.0'
 }
 
-NUM_SAMPLES = 16
+NUM_SAMPLES = 48
 TUBE50_VOlUME = 20
 
 BB_VOLUME = 427.5
