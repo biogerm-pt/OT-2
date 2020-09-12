@@ -8,10 +8,10 @@ metadata = {
     'protocolName': 'USO_v6_station_a_S14_magmax_Multi',
     'author': 'Nick <protocols@opentrons.com>',
     'source': 'Custom Protocol Request',
-    'apiLevel': '2.0'
+    'apiLevel': '2.2'
 }
 
-NUM_SAMPLES = 16
+NUM_SAMPLES = 24
 TUBE50_VOlUME = 20
 
 BB_VOLUME = 427.5
@@ -141,28 +141,29 @@ resuming.')
     #         m300.aspirate(500, source.bottom(h))
     #         m300.dispense(500, source.bottom(h+20))
 
-    pick_up(m300)
+   #pick_up(m300)
     num_trans = math.ceil(BB_VOLUME/210)
     vol_per_trans = BB_VOLUME/num_trans
+    vol_out = vol_per_trans + 20
+    m300.default_speed = 100
+    tp = 0
     for i, m in enumerate(dests_multi):
         source = binding_buffer.wells()[i//4]
         for i in range(num_trans):
+            pick_up(m300)
             if i == 0:
                 m300.mix(MIX_REPETITIONS, MIX_VOLUME, source)
-            #m300.transfer(vol_per_trans, source, m, air_gap=8, new_tip='never')
+            #m300.transfer(vol_per_trans, source, m, air_gap=7)
+            m300.transfer(vol_per_trans, source, m, air_gap=7,
+                       new_tip='always')
+            m300.air_gap(10)
+            m300.drop_tip()
             #m300.blow_out()
-            m300.aspirate(vol_per_trans, source)
-            m300.air_gap(7)
-            ctx.delay(seconds=4)
-            #m300.dispense(10, source.top() )
-            #ctx.delay(seconds=2)
-            m300.default_speed = 100
-            m300.dispense(vol_per_trans, m )
-            m300.blow_out()
-            #m300.default_speed = 400
+
+    
         
 
-    m300.drop_tip()
+    #m300.drop_tip()
 
     ctx.comment('Move deepwell plate (slot 4) to Station B for RNA \
 extraction.')

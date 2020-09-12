@@ -11,7 +11,7 @@ metadata = {
     'apiLevel': '2.0'
 }
 
-NUM_SAMPLES = 16
+NUM_SAMPLES = 32
 TUBE50_VOlUME = 20
 
 BB_VOLUME = 427.5
@@ -79,7 +79,7 @@ def run(ctx: protocol_api.ProtocolContext):
         #tip_log['count'] = {m300: 0, s20: 0}
 
     tip_log['tips'] = {
-        m300: [tip for rack in tipracks300 for tip in rack.wells()],
+        m300: [tip for rack in tipracks300 for tip in rack.rows()[0]]
         #s20: [tip for rack in tipracks20 for tip in rack.rows()[0]]
         #s20: [tip for rack in tipracks20 for tip in rack.wells()]
     }
@@ -98,18 +98,7 @@ resuming.')
         pip.pick_up_tip(tip_log['tips'][pip][tip_log['count'][pip]])
         tip_log['count'][pip] += 1
 
-    # heights = {binding_buffer: TUBE50_VOlUME * 1}
-    # radius = (binding_buffer.diameter)/2
-    # min_h = 5
-    #
-    # def h_track(vol, tube):
-    #     nonlocal heights
-    #     dh = vol/(math.pi*(radius**2))
-    #     if heights[tube] - dh > min_h:
-    #         heights[tube] = heights[tube] - dh
-    #     else:
-    #         heights[tube] = min_h  # stop 5mm short of the bottom
-    #     return heights[tube]
+
 
     m300.flow_rate.aspirate = 40
     m300.flow_rate.dispense = 40
@@ -141,28 +130,30 @@ resuming.')
     #         m300.aspirate(500, source.bottom(h))
     #         m300.dispense(500, source.bottom(h+20))
 
-    pick_up(m300)
+    #pick_up(m300)
     num_trans = math.ceil(BB_VOLUME/210)
     vol_per_trans = BB_VOLUME/num_trans
+    vol_out = vol_per_trans + 50
     for i, m in enumerate(dests_multi):
         source = binding_buffer.wells()[i//4]
+        pick_up(m300)
         for i in range(num_trans):
             if i == 0:
                 m300.mix(MIX_REPETITIONS, MIX_VOLUME, source)
             #m300.transfer(vol_per_trans, source, m, air_gap=8, new_tip='never')
             #m300.blow_out()
+            m300.dispense(50, source.top() )
             m300.aspirate(vol_per_trans, source)
             m300.air_gap(7)
             ctx.delay(seconds=4)
-            #m300.dispense(10, source.top() )
+            #m300.dispense(7, source.top() )
             #ctx.delay(seconds=2)
             m300.default_speed = 100
-            m300.dispense(vol_per_trans, m )
+            m300.dispense(vol_out, m.bottom(20) )
             m300.blow_out()
-            #m300.default_speed = 400
-        
+        m300.drop_tip()
 
-    m300.drop_tip()
+    #m300.drop_tip()
 
     ctx.comment('Move deepwell plate (slot 4) to Station B for RNA \
 extraction.')
