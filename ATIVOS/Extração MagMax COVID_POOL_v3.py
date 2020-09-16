@@ -133,7 +133,7 @@ resuming.')
 
     switch = True
     drop_count = 0
-    drop_threshold = 200  # number of tips trash will accommodate before prompting user to empty
+    drop_threshold = 240  # number of tips trash will accommodate before prompting user to empty
 
     def drop(pip):
         nonlocal switch
