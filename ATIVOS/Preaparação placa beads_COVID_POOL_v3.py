@@ -15,7 +15,7 @@ NUM_SAMPLES = 64
 
 #Não mexer
 COLUMN_TIP = 0
-BB_VOLUME = 427.5
+BB_VOLUME = 400
 MIX_REPETITIONS = 4
 MIX_VOLUME = 180
 ICPK_VOlUME = 15
@@ -99,7 +99,11 @@ resuming.')
         pick_up(m300)
         for i in range(num_trans):
             if i == 0:
+                m300.flow_rate.aspirate = 80
+                m300.flow_rate.dispense = 80
                 m300.mix(MIX_REPETITIONS, MIX_VOLUME, source)
+                m300.flow_rate.aspirate = 20
+                m300.flow_rate.dispense = 20
             ctx.delay(seconds=2)
             m300.aspirate(vol_per_trans, source)
             m300.air_gap(3)
@@ -110,7 +114,7 @@ resuming.')
             m300.dispense(vol_out, m.bottom(20) )
             ctx.delay(seconds=2)
             m300.air_gap(10)
-            m300.dispense(80, source )   
+            m300.dispense(80, source.top(-2) )   
         m300.drop_tip()
 
     #m300.drop_tip()
