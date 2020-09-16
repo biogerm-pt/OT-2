@@ -11,7 +11,7 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 35 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
+NUM_SAMPLES = 9 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
 ELUTION_VOL = 50
 STARTING_VOL = 580
 WASH_VOL = 500
@@ -240,7 +240,7 @@ resuming.')
 
         num_trans = math.ceil(wash_vol/200)
         vol_per_trans = wash_vol/num_trans
-        wash_vol_rem = wash_vol
+        wash_vol_rem = wash_vol + 10
         for i, (m, spot) in enumerate(zip(mag_samples_m, parking_spots)):
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = -1 if side_ind % 2 == 0 else 1
