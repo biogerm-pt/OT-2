@@ -11,7 +11,7 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 64
+NUM_SAMPLES = 2
 
 #Não mexer
 COLUMN_TIP = 0
