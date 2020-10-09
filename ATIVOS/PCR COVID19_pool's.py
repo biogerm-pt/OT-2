@@ -11,7 +11,7 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 34  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
+NUM_SAMPLES = 95  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
 SAMPLE_VOL = 10
 PREPARE_MASTERMIX = True
 TIP_TRACK = False
@@ -99,7 +99,7 @@ resuming.')
         }
     }
 
-    vol_overage = 1.1 if NUM_SAMPLES > 48 else 1.1  # decrease overage for small sample number
+    vol_overage = 1.05 if NUM_SAMPLES > 48 else 1.03  # decrease overage for small sample number
     total_mm_vol = mm_dict['volume']*(NUM_SAMPLES+2)*vol_overage
     
     
