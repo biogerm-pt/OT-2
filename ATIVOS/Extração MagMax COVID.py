@@ -11,7 +11,7 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 96 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
+NUM_SAMPLES = 80 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
 ELUTION_VOL = 50
 STARTING_VOL = 580
 WASH_VOL = 500
@@ -51,16 +51,16 @@ def run(ctx):
     # load labware and pipettes
     num_cols = math.ceil(NUM_SAMPLES/8)
     tips300 = [ctx.load_labware('opentrons_96_tiprack_300ul', slot, '200µl filtertiprack')
-               for slot in ['3', '6', '8', '9', '10']]
+               for slot in ['3', '6', '8', '9', '7']]
     if PARK:
         parkingrack = ctx.load_labware(
-            'opentrons_96_tiprack_300ul', '7', 'empty tiprack for parking')
+            'opentrons_96_tiprack_300ul', '10', 'empty tiprack for parking')
         if POOL:
             parking_spots = parkingrack.rows()[0]
         else:
             parking_spots = parkingrack.rows()[0][:num_cols]
     else:
-        tips300.insert(0, ctx.load_labware('opentrons_96_tiprack_300ul', '7',
+        tips300.insert(0, ctx.load_labware('opentrons_96_tiprack_300ul', '10',
                                            '200µl filtertiprack'))
         parking_spots = [None for none in range(12)]
 
