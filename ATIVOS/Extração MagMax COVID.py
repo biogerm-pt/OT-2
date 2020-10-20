@@ -11,7 +11,7 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 80 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
+NUM_SAMPLES = 8 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
 ELUTION_VOL = 50
 STARTING_VOL = 580
 WASH_VOL = 500
@@ -69,7 +69,7 @@ def run(ctx):
 
     magdeck = ctx.load_module('magnetic module gen2', '4')
     magdeck.disengage()
-    magheight = 13.7
+    magheight = 6
     magplate = magdeck.load_labware('nest_96_wellplate_2ml_deep')
     # magplate = magdeck.load_labware('biorad_96_wellplate_200ul_pcr')
     tempdeck = ctx.load_module('Temperature Module Gen2', '1')

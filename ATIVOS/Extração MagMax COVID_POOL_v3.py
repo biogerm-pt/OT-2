@@ -69,7 +69,7 @@ def run(ctx):
 
     magdeck = ctx.load_module('magnetic module gen2', '4')
     magdeck.disengage()
-    magheight = 13.7
+    magheight = 6
     magplate = magdeck.load_labware('nest_96_wellplate_2ml_deep')
     # magplate = magdeck.load_labware('biorad_96_wellplate_200ul_pcr')
     tempdeck = ctx.load_module('Temperature Module Gen2', '1')
@@ -338,7 +338,7 @@ for 2 minutes')
             m300.drop_tip()
 
     magdeck.engage(height=magheight)
-    ctx.delay(minutes=2, msg='Incubating on MagDeck for 2 minutes.')
+    ctx.delay(minutes=5, msg='Incubating on MagDeck for 5 minutes.')
 
     # remove initial supernatant
 
