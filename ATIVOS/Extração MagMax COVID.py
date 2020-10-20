@@ -338,7 +338,7 @@ for 2 minutes')
             m300.drop_tip()
 
     magdeck.engage(height=magheight)
-    ctx.delay(minutes=2, msg='Incubating on MagDeck for 2 minutes.')
+    ctx.delay(minutes=5, msg='Incubating on MagDeck for 5 minutes.')
 
     # remove initial supernatant
 
