@@ -11,7 +11,7 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 95  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
+NUM_SAMPLES = 55  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
 SAMPLE_VOL = 10
 PREPARE_MASTERMIX = True
 TIP_TRACK = False
@@ -109,12 +109,12 @@ resuming.')
 
     def h_track(vol):
         nonlocal mm_height
-        dh = 1.1*vol/(math.pi*(r**2))  # compensate for 10% theoretical volume loss
-        mm_height = mm_height - dh if mm_height - dh > 2 else 2  # stop at 2mm above mm tube bottom
+        dh = 1.03*vol/(math.pi*(r**2))  # compensate for 10% theoretical volume loss
+        mm_height = mm_height - dh if mm_height - dh > 1.5 else 1.5  # stop at 2mm above mm tube bottom
         return mm_tube.bottom(mm_height)
 
     if PREPARE_MASTERMIX:
-        vol_overage = 1.1 if NUM_SAMPLES > 48 else 1.1
+        vol_overage = 1.05 if NUM_SAMPLES > 48 else 1.03
 
         for i, (tube, vol) in enumerate(mm_dict['components'].items()):
             comp_vol = vol*(NUM_SAMPLES)*vol_overage
