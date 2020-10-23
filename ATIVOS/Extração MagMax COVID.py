@@ -11,7 +11,7 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 8 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
+NUM_SAMPLES = 77 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
 ELUTION_VOL = 50
 STARTING_VOL = 580
 WASH_VOL = 500
@@ -92,7 +92,7 @@ def run(ctx):
         elution_samples_m = flatplate.rows()[0][:num_cols]
 
     magdeck.disengage()  # just in case
-    tempdeck.set_temperature(4)
+    tempdeck.set_temperature(8)
 
     m300.flow_rate.aspirate = 50
     m300.flow_rate.dispense = 150

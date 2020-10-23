@@ -51,16 +51,16 @@ def run(ctx):
     # load labware and pipettes
     num_cols = math.ceil(NUM_SAMPLES/8)
     tips300 = [ctx.load_labware('starlab_96_tiprack_300ul', slot, '200µl filtertiprack')
-               for slot in ['3', '6', '8', '9', '10']]
+               for slot in ['3', '6', '8', '9', '7']]
     if PARK:
         parkingrack = ctx.load_labware(
-            'starlab_96_tiprack_300ul', '7', 'empty tiprack for parking')
+            'starlab_96_tiprack_300ul', '10', 'empty tiprack for parking')
         if POOL:
             parking_spots = parkingrack.rows()[0]
         else:
             parking_spots = parkingrack.rows()[0][:num_cols]
     else:
-        tips300.insert(0, ctx.load_labware('starlab_96_tiprack_300ul', '7',
+        tips300.insert(0, ctx.load_labware('starlab_96_tiprack_300ul', '10',
                                            '200µl filtertiprack'))
         parking_spots = [None for none in range(12)]
 
@@ -92,7 +92,7 @@ def run(ctx):
         elution_samples_m = flatplate.rows()[0][:num_cols]
 
     magdeck.disengage()  # just in case
-    tempdeck.set_temperature(4)
+    tempdeck.set_temperature(8)
 
     m300.flow_rate.aspirate = 50
     m300.flow_rate.dispense = 150
