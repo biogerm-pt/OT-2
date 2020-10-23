@@ -11,7 +11,7 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 64 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
+NUM_SAMPLES = 8 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
 ELUTION_VOL = 50
 STARTING_VOL = 580
 WASH_VOL = 500
@@ -69,7 +69,7 @@ def run(ctx):
 
     magdeck = ctx.load_module('magnetic module gen2', '4')
     magdeck.disengage()
-    magheight = 13.7
+    magheight = 6
     magplate = magdeck.load_labware('nest_96_wellplate_2ml_deep')
     # magplate = magdeck.load_labware('biorad_96_wellplate_200ul_pcr')
     tempdeck = ctx.load_module('Temperature Module Gen2', '1')
@@ -92,7 +92,7 @@ def run(ctx):
         elution_samples_m = flatplate.rows()[0][:num_cols]
 
     magdeck.disengage()  # just in case
-    tempdeck.set_temperature(4)
+    tempdeck.set_temperature(8)
 
     m300.flow_rate.aspirate = 50
     m300.flow_rate.dispense = 150
@@ -338,7 +338,7 @@ for 2 minutes')
             m300.drop_tip()
 
     magdeck.engage(height=magheight)
-    ctx.delay(minutes=2, msg='Incubating on MagDeck for 2 minutes.')
+    ctx.delay(minutes=5, msg='Incubating on MagDeck for 5 minutes.')
 
     # remove initial supernatant
 
