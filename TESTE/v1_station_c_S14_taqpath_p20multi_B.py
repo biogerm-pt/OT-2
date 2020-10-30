@@ -10,8 +10,6 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-#pick de amostras das 3 placas das pools para preparar o PCR 2 de confirmação.
-
 plate_1_wells = "B1,D7,D10,E3,E5"
 plate_2_wells = "A1,C1,F8,G4,G8,H12"
 plate_3_wells = "A2,B2"
@@ -31,16 +29,10 @@ def run(ctx: protocol_api.ProtocolContext):
         ctx.load_labware('opentrons_96_filtertiprack_20ul', slot)
         for slot in ['6', '9', '10', '11']
     ]
-    # tempdeck = ctx.load_module('Temperature Module Gen2', '4')
-    #pcr_plate = tempdeck.load_labware(
-    #    'opentrons_96_aluminumblock_nest_wellplate_100ul', 'PCR plate')
-    #tempdeck.set_temperature(4)
-
-
-    pcr_plate = ctx.load_labware(
-        'opentrons_96_aluminumblock_nest_wellplate_100ul', '4', 'PCR sample plate')
-
-
+    tempdeck = ctx.load_module('Temperature Module Gen2', '4')
+    pcr_plate = tempdeck.load_labware(
+        'opentrons_96_aluminumblock_nest_wellplate_100ul', 'PCR plate')
+    tempdeck.set_temperature(24)
 
     # pipette
     p20 = ctx.load_instrument('p20_single_gen2', 'left', tip_racks=tips20)
@@ -50,7 +42,7 @@ def run(ctx: protocol_api.ProtocolContext):
         plate.wells_by_name()[name]
         for plate, set in zip(source_plates,
                               [plate_1_wells, plate_2_wells, plate_3_wells])
-        for name in set.split(',')]
+        for name in set.split(',') if name]
     sample_dests = pcr_plate.rows()[0][:len(sources)]
 
     tip_log = {'count': {}}

@@ -10,11 +10,9 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-#pick de amostras das 3 placas das pools para preparar o PCR 2 de confirmação.
-
-plate_1_wells = "B1,D7,D10,E3,E5"
-plate_2_wells = "A1,C1,F8,G4,G8,H12"
-plate_3_wells = "A2,B2"
+plate_1_wells = "A2,A4,A7,A9,A10,A11,B1,B2,B5,B9,C1,C4,C5,C8,C11,D3,D8,D9,D11,D12,E2,E3,E4,E8,E12,F7,F8,G1,G2,G3,H9,H11"
+plate_2_wells = "A2,A4,A7,A9,A10,A11,B1,B2,B5,B9,C1,C4,C5,C8,C11,D3,D8,D9,D11,D12,E2,E3,E4,E8,E12,F7,F8,G1,G2,G3,H9,H11"
+plate_3_wells = "A2,A4,A7,A9,A10,A11,B1,B2,B5,B9,C1,C4,C5,C8,C11,D3,D8,D9,D11,D12,E2,E3,E4,E8,E12,F7,F8,G1,G2,G3,H9,H11"
 SAMPLE_VOL = 10
 TIP_TRACK = False
 
@@ -31,16 +29,13 @@ def run(ctx: protocol_api.ProtocolContext):
         ctx.load_labware('opentrons_96_filtertiprack_20ul', slot)
         for slot in ['6', '9', '10', '11']
     ]
-    # tempdeck = ctx.load_module('Temperature Module Gen2', '4')
-    #pcr_plate = tempdeck.load_labware(
-    #    'opentrons_96_aluminumblock_nest_wellplate_100ul', 'PCR plate')
-    #tempdeck.set_temperature(4)
-
-
-    pcr_plate = ctx.load_labware(
-        'opentrons_96_aluminumblock_nest_wellplate_100ul', '4', 'PCR sample plate')
-
-
+    tempdeck = ctx.load_module('Temperature Module Gen2', '4')
+    pcr_plate = tempdeck.load_labware(
+        'opentrons_96_aluminumblock_nest_wellplate_100ul', 'PCR plate')
+  
+  
+  #ALTERAR#############ALTERAR
+    tempdeck.set_temperature(20)
 
     # pipette
     p20 = ctx.load_instrument('p20_single_gen2', 'left', tip_racks=tips20)
@@ -50,8 +45,8 @@ def run(ctx: protocol_api.ProtocolContext):
         plate.wells_by_name()[name]
         for plate, set in zip(source_plates,
                               [plate_1_wells, plate_2_wells, plate_3_wells])
-        for name in set.split(',')]
-    sample_dests = pcr_plate.rows()[0][:len(sources)]
+        for name in set.split(',') if name]
+    sample_dests = pcr_plate.wells()[:len(sources)]
 
     tip_log = {'count': {}}
     folder_path = '/data/C'
