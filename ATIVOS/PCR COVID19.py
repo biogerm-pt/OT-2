@@ -98,7 +98,7 @@ resuming.')
         }
     }
 
-    vol_overage = 1.05 if NUM_SAMPLES > 48 else 1.03  # decrease overage for small sample number
+    vol_overage = 1.07 if NUM_SAMPLES > 48 else 1.03  # decrease overage for small sample number
     total_mm_vol = mm_dict['volume']*(NUM_SAMPLES+2)*vol_overage
     # translate total mastermix volume to starting height
     r = mm_tube.diameter/2
@@ -107,7 +107,7 @@ resuming.')
     def h_track(vol):
         nonlocal mm_height
         dh = 1.03*vol/(math.pi*(r**2))  # compensate for 10% theoretical volume loss
-        mm_height = mm_height - dh if mm_height - dh > 2 else 2  # stop at 2mm above mm tube bottom
+        mm_height = mm_height - dh if mm_height - dh > 1.5 else 1.5  # stop at 2mm above mm tube bottom
         return mm_tube.bottom(mm_height)
 
     if PREPARE_MASTERMIX:
@@ -136,7 +136,7 @@ resuming.')
             pick_up(p300)
         mix_vol = mm_total_vol / 2 if mm_total_vol / 2 <= 200 else 200  # mix volume is 1/2 MM total, maxing at 200µl
         mix_loc = mm_tube.bottom(20) if NUM_SAMPLES > 48 else mm_tube.bottom(5)
-        p300.mix(7, mix_vol, mix_loc)
+        p300.mix(13, mix_vol, mix_loc)
         p300.blow_out(mm_tube.top())
         p300.touch_tip()
 
