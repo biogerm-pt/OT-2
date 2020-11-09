@@ -135,7 +135,7 @@ resuming.')
         if not p300.hw_pipette['has_tip']:  # pickup tip with P300 if necessary for mixing
             pick_up(p300)
         mix_vol = mm_total_vol / 2 if mm_total_vol / 2 <= 200 else 200  # mix volume is 1/2 MM total, maxing at 200µl
-        mix_loc = mm_tube.bottom(20) if NUM_SAMPLES > 48 else mm_tube.bottom(5)
+        mix_loc = mm_tube.bottom(5) if NUM_SAMPLES > 48 else mm_tube.bottom(5)
         p300.mix(13, mix_vol, mix_loc)
         p300.blow_out(mm_tube.top())
         p300.touch_tip()
