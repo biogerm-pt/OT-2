@@ -92,7 +92,7 @@ def run(ctx):
         elution_samples_m = flatplate.rows()[0][:num_cols]
 
     magdeck.disengage()  # just in case
-    tempdeck.set_temperature(8)
+    #tempdeck.set_temperature(8)
 
     m300.flow_rate.aspirate = 50
     m300.flow_rate.dispense = 150
