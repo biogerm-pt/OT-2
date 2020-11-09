@@ -32,7 +32,7 @@ def run(ctx: protocol_api.ProtocolContext):
     tempdeck = ctx.load_module('Temperature Module Gen2', '4')
     pcr_plate = tempdeck.load_labware(
         'opentrons_96_aluminumblock_nest_wellplate_100ul', 'PCR plate')
-    tempdeck.set_temperature(24)
+    tempdeck.set_temperature(4)
 
     # pipette
     p20 = ctx.load_instrument('p20_single_gen2', 'left', tip_racks=tips20)

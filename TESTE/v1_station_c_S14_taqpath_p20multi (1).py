@@ -35,7 +35,7 @@ def run(ctx: protocol_api.ProtocolContext):
   
   
   #ALTERAR#############ALTERAR
-    tempdeck.set_temperature(20)
+    tempdeck.set_temperature(4)
 
     # pipette
     p20 = ctx.load_instrument('p20_single_gen2', 'left', tip_racks=tips20)
