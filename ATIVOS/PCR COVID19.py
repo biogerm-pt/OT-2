@@ -94,7 +94,7 @@ resuming.')
         'volume': 15,
         'components': {
             tube: vol for tube, vol in zip(tube_block.columns()[1][:3],
-                                           [7.5, 1.25, 6.25])
+                                           [6.25, 1.25, 7.5])
         }
     }
 
@@ -120,7 +120,7 @@ resuming.')
             vol_per_trans = comp_vol/num_trans
             for _ in range(num_trans):
                 p300.air_gap(20)
-                p300.aspirate(vol_per_trans, tube)
+                p300.aspirate(vol_per_trans, tube, 0.5)
                 ctx.delay(seconds=3)
                 p300.touch_tip(tube)
                 p300.air_gap(20)
@@ -151,7 +151,8 @@ resuming.')
             vol = num_cols*mm_dict['volume']*((vol_overage-1)/2+1)
         else:
             vol = (num_cols-1)*mm_dict['volume']*((vol_overage-1)/2+1)
-        p300.transfer(vol, mm_tube, well, new_tip='never')
+        p300.flow_rate.aspirate = 20
+        p300.transfer(vol, mm_tube, well, 0.5, new_tip='never')
     p300.drop_tip()
 
     # transfer mastermix to plate
