@@ -26,18 +26,18 @@ def run(ctx: protocol_api.ProtocolContext):
         'chilled elution plate on block from Station B')
     tips20 = [
         ctx.load_labware('opentrons_96_filtertiprack_20ul', slot)
-        for slot in ['3', '6', '8', '9', '10', '11']
+        for slot in ['3', '6']
     ]
-    tips300 = [ctx.load_labware('opentrons_96_filtertiprack_200ul', '2')]
+    tips300 = [ctx.load_labware('opentrons_96_filtertiprack_200ul', '9')]
     tempdeck = ctx.load_module('Temperature Module Gen2', '4')
     pcr_plate = tempdeck.load_labware(
         'opentrons_96_aluminumblock_nest_wellplate_100ul', 'PCR plate')
     mm_strips = ctx.load_labware(
-        'opentrons_96_aluminumblock_nest_wellplate_100ul', '7',
+        'opentrons_96_aluminumblock_nest_wellplate_100ul', '5',
         'mastermix strips')
-    tempdeck.set_temperature(4)
+    #tempdeck.set_temperature(4)
     tube_block = ctx.load_labware(
-        'opentrons_24_aluminumblock_nest_2ml_screwcap', '5',
+        'opentrons_24_aluminumblock_nest_2ml_screwcap', '8',
         '2ml screw tube aluminum block for mastermix + controls')
 
     # pipette
@@ -98,7 +98,7 @@ resuming.')
         }
     }
 
-    vol_overage = 1.2 if NUM_SAMPLES > 48 else 1.1  # decrease overage for small sample number
+    vol_overage = 1.06 if NUM_SAMPLES > 48 else 1.04  # decrease overage for small sample number
     total_mm_vol = mm_dict['volume']*(NUM_SAMPLES+2)*vol_overage
     # translate total mastermix volume to starting height
     r = mm_tube.diameter/2
@@ -111,7 +111,7 @@ resuming.')
         return mm_tube.bottom(mm_height)
 
     if PREPARE_MASTERMIX:
-        vol_overage = 1.2 if NUM_SAMPLES > 48 else 1.1
+        vol_overage = 1.06 if NUM_SAMPLES > 48 else 1.04
 
         for i, (tube, vol) in enumerate(mm_dict['components'].items()):
             comp_vol = vol*(NUM_SAMPLES)*vol_overage
@@ -136,7 +136,9 @@ resuming.')
             pick_up(p300)
         mix_vol = mm_total_vol / 2 if mm_total_vol / 2 <= 200 else 200  # mix volume is 1/2 MM total, maxing at 200µl
         mix_loc = mm_tube.bottom(20) if NUM_SAMPLES > 48 else mm_tube.bottom(5)
-        p300.mix(7, mix_vol, mix_loc)
+        mix_loc2 = mm_tube.bottom(10) if NUM_SAMPLES > 48 else mm_tube.bottom(5)
+        p300.mix(10, mix_vol, mix_loc,3)
+        p300.mix(10, mix_vol, mix_loc2,3)
         p300.blow_out(mm_tube.top())
         p300.touch_tip()
 
