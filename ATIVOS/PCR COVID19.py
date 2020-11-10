@@ -26,7 +26,7 @@ def run(ctx: protocol_api.ProtocolContext):
         'chilled elution plate on block from Station B')
     tips20 = [
         ctx.load_labware('opentrons_96_filtertiprack_20ul', slot)
-        for slot in ['3', '6']
+        for slot in ['2', '3']
     ]
     tips300 = [ctx.load_labware('opentrons_96_filtertiprack_200ul', '9')]
     tempdeck = ctx.load_module('Temperature Module Gen2', '4')
