@@ -35,7 +35,7 @@ def run(ctx: protocol_api.ProtocolContext):
     mm_strips = ctx.load_labware(
         'opentrons_96_aluminumblock_nest_wellplate_100ul', '5',
         'mastermix strips')
-    tempdeck.set_temperature(4)
+    #tempdeck.set_temperature(4)
     tube_block = ctx.load_labware(
         'opentrons_24_aluminumblock_nest_2ml_snapcap', '8',
         '2ml screw tube aluminum block for mastermix + controls')
