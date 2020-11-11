@@ -8,7 +8,7 @@ metadata = {
     'protocolName': 'Version 1 S14 Station C Thermo Taqpath P20 Multi',
     'author': 'Nick <protocols@opentrons.com>',
     'source': 'Custom Protocol Request',
-    'apiLevel': '2.3'
+    'apiLevel': '2.6'
 }
 
 NUM_SAMPLES = 96  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
@@ -35,7 +35,7 @@ def run(ctx: protocol_api.ProtocolContext):
     mm_strips = ctx.load_labware(
         'opentrons_96_aluminumblock_nest_wellplate_100ul', '5',
         'mastermix strips')
-    #tempdeck.set_temperature(4)
+    tempdeck.set_temperature(4)
     tube_block = ctx.load_labware(
         'opentrons_24_aluminumblock_nest_2ml_snapcap', '8',
         '2ml screw tube aluminum block for mastermix + controls')
@@ -152,7 +152,7 @@ resuming.')
         else:
             vol = (num_cols-1)*mm_dict['volume']*((vol_overage-1)/2+1)
         p300.flow_rate.aspirate = 15
-        p300.transfer(vol, mm_tube.bottom(1.5), well, new_tip='never')
+        p300.transfer(vol, mm_tube.bottom(1.5), well, mix_before=(1, 200), new_tip='never' )
     p300.drop_tip()
 
     # transfer mastermix to plate
