@@ -35,7 +35,11 @@ def run(ctx: protocol_api.ProtocolContext):
     mm_strips = ctx.load_labware(
         'opentrons_96_aluminumblock_nest_wellplate_100ul', '5',
         'mastermix strips')
+    
+    #TEMPERATURE
     tempdeck.set_temperature(4)
+
+    
     tube_block = ctx.load_labware(
         'opentrons_24_aluminumblock_nest_2ml_snapcap', '8',
         '2ml screw tube aluminum block for mastermix + controls')
@@ -112,8 +116,11 @@ resuming.')
 
     def mix_up_down(reps, vol, loc, pip):
         for _ in range(reps):
-            pip.aspirate(vol, loc.bottom(1))
-            pip.dispense(vol, loc.bottom(loc._depth/2))
+            pip.aspirate(vol, loc.bottom(5))
+            #pip.dispense(vol, loc.bottom(loc._depth/2))
+            pip.dispense(vol, loc.bottom(20))
+            pip.aspirate(vol, loc.bottom(20))
+            pip.dispense(vol, loc.bottom(5))
 
     if PREPARE_MASTERMIX:
         vol_overage = 1.1 if NUM_SAMPLES > 48 else 1.04
