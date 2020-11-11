@@ -39,7 +39,7 @@ def run(ctx: protocol_api.ProtocolContext):
     #TEMPERATURE
     tempdeck.set_temperature(4)
 
-    
+
     tube_block = ctx.load_labware(
         'opentrons_24_aluminumblock_nest_2ml_snapcap', '8',
         '2ml screw tube aluminum block for mastermix + controls')
@@ -118,9 +118,9 @@ resuming.')
         for _ in range(reps):
             pip.aspirate(vol, loc.bottom(5))
             #pip.dispense(vol, loc.bottom(loc._depth/2))
-            pip.dispense(vol, loc.bottom(20))
+            pip.dispense(vol, loc.bottom(20), 3)
             pip.aspirate(vol, loc.bottom(20))
-            pip.dispense(vol, loc.bottom(5))
+            pip.dispense(vol, loc.bottom(5), 2)
 
     if PREPARE_MASTERMIX:
         vol_overage = 1.1 if NUM_SAMPLES > 48 else 1.04
@@ -149,11 +149,11 @@ resuming.')
         mix_vol = mm_total_vol / 2 if mm_total_vol / 2 <= 200 else 200  # mix volume is 1/2 MM total, maxing at 200µl
         # mix_loc = mm_tube.bottom(10) if NUM_SAMPLES > 48 else mm_tube.bottom(5)
         # mix_loc2 = mm_tube.bottom(20) if NUM_SAMPLES > 48 else mm_tube.bottom(10)
-        p300.flow_rate.aspirate = 15
-        mix_up_down(15, mix_vol, mm_tube, p300)
+        #p300.flow_rate.aspirate = 15
+        mix_up_down(10, mix_vol, mm_tube, p300)
         # p300.mix(15, mix_vol, mix_loc, 3)
         # p300.mix(15, mix_vol, mix_loc2, 4)
-        p300.flow_rate.aspirate = 150
+        #p300.flow_rate.aspirate = 150
         p300.blow_out(mm_tube.top())
         p300.touch_tip()
 
