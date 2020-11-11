@@ -26,7 +26,7 @@ def run(ctx: protocol_api.ProtocolContext):
         'chilled elution plate on block from Station B')
     tips20 = [
         ctx.load_labware('opentrons_96_filtertiprack_20ul', slot)
-        for slot in ['3', '6']
+        for slot in ['2', '3']
     ]
     tips300 = [ctx.load_labware('opentrons_96_filtertiprack_200ul', '9')]
     tempdeck = ctx.load_module('Temperature Module Gen2', '4')
@@ -120,7 +120,7 @@ resuming.')
             vol_per_trans = comp_vol/num_trans
             for _ in range(num_trans):
                 p300.air_gap(20)
-                p300.aspirate(vol_per_trans, tube)
+                p300.aspirate(vol_per_trans, tube, 0.5)
                 ctx.delay(seconds=3)
                 p300.touch_tip(tube)
                 p300.air_gap(20)
@@ -135,9 +135,9 @@ resuming.')
         if not p300.hw_pipette['has_tip']:  # pickup tip with P300 if necessary for mixing
             pick_up(p300)
         mix_vol = mm_total_vol / 2 if mm_total_vol / 2 <= 200 else 200  # mix volume is 1/2 MM total, maxing at 200µl
-        mix_loc = mm_tube.bottom(20) if NUM_SAMPLES > 48 else mm_tube.bottom(5)
+        mix_loc = mm_tube.bottom(20) if NUM_SAMPLES > 48 else mm_tube.bottom(10)
         mix_loc2 = mm_tube.bottom(10) if NUM_SAMPLES > 48 else mm_tube.bottom(5)
-        p300.mix(10, mix_vol, mix_loc,3)
+        p300.mix(15, mix_vol, mix_loc,3.5)
         p300.mix(10, mix_vol, mix_loc2,3)
         p300.blow_out(mm_tube.top())
         p300.touch_tip()
@@ -151,7 +151,8 @@ resuming.')
             vol = num_cols*mm_dict['volume']*((vol_overage-1)/2+1)
         else:
             vol = (num_cols-1)*mm_dict['volume']*((vol_overage-1)/2+1)
-        p300.transfer(vol, mm_tube, well, new_tip='never')
+        p300.flow_rate.aspirate = 20
+        p300.transfer(vol, mm_tube.bottom(0.5), well, new_tip='never')
     p300.drop_tip()
 
     # transfer mastermix to plate

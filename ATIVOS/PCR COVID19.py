@@ -152,7 +152,7 @@ resuming.')
         else:
             vol = (num_cols-1)*mm_dict['volume']*((vol_overage-1)/2+1)
         p300.flow_rate.aspirate = 20
-        p300.transfer(vol, mm_tube, well, 0.5, new_tip='never')
+        p300.transfer(vol, mm_tube, well, new_tip='never')
     p300.drop_tip()
 
     # transfer mastermix to plate
