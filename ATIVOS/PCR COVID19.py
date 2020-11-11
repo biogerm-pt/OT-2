@@ -8,7 +8,7 @@ metadata = {
     'protocolName': 'Version 1 S14 Station C Thermo Taqpath P20 Multi',
     'author': 'Nick <protocols@opentrons.com>',
     'source': 'Custom Protocol Request',
-    'apiLevel': '2.3'
+    'apiLevel': '2.6'
 }
 
 NUM_SAMPLES = 96  # start with 8 samples, slowly increase to 48, then 94 (max is 94)
@@ -98,7 +98,7 @@ resuming.')
         }
     }
 
-    vol_overage = 1.07 if NUM_SAMPLES > 48 else 1.04  # decrease overage for small sample number
+    vol_overage = 1.01 if NUM_SAMPLES > 48 else 1.02  # decrease overage for small sample number
     total_mm_vol = mm_dict['volume']*(NUM_SAMPLES+2)*vol_overage
     # translate total mastermix volume to starting height
     r = mm_tube.diameter/2
@@ -111,7 +111,7 @@ resuming.')
         return mm_tube.bottom(mm_height)
 
     if PREPARE_MASTERMIX:
-        vol_overage = 1.07 if NUM_SAMPLES > 48 else 1.04
+        vol_overage = 1.1 if NUM_SAMPLES > 48 else 1.04
 
         for i, (tube, vol) in enumerate(mm_dict['components'].items()):
             comp_vol = vol*(NUM_SAMPLES)*vol_overage
@@ -120,7 +120,7 @@ resuming.')
             vol_per_trans = comp_vol/num_trans
             for _ in range(num_trans):
                 p300.air_gap(20)
-                p300.aspirate(vol_per_trans, tube, 0.5)
+                p300.aspirate(vol_per_trans, tube.bottom(1.5), 0.4)
                 ctx.delay(seconds=3)
                 p300.touch_tip(tube)
                 p300.air_gap(20)
@@ -135,10 +135,10 @@ resuming.')
         if not p300.hw_pipette['has_tip']:  # pickup tip with P300 if necessary for mixing
             pick_up(p300)
         mix_vol = mm_total_vol / 2 if mm_total_vol / 2 <= 200 else 200  # mix volume is 1/2 MM total, maxing at 200µl
-        mix_loc = mm_tube.bottom(20) if NUM_SAMPLES > 48 else mm_tube.bottom(10)
-        mix_loc2 = mm_tube.bottom(10) if NUM_SAMPLES > 48 else mm_tube.bottom(5)
-        p300.mix(15, mix_vol, mix_loc,3.5)
-        p300.mix(10, mix_vol, mix_loc2,3)
+        mix_loc = mm_tube.bottom(10) if NUM_SAMPLES > 48 else mm_tube.bottom(5)
+        mix_loc2 = mm_tube.bottom(20) if NUM_SAMPLES > 48 else mm_tube.bottom(10)
+        p300.mix(15, mix_vol, mix_loc, 3)
+        p300.mix(15, mix_vol, mix_loc2, 4)
         p300.blow_out(mm_tube.top())
         p300.touch_tip()
 
@@ -151,13 +151,14 @@ resuming.')
             vol = num_cols*mm_dict['volume']*((vol_overage-1)/2+1)
         else:
             vol = (num_cols-1)*mm_dict['volume']*((vol_overage-1)/2+1)
-        p300.flow_rate.aspirate = 20
-        p300.transfer(vol, mm_tube, well, new_tip='never')
+        p300.flow_rate.aspirate = 15
+        p300.transfer(vol, mm_tube.bottom(1.5), well, mix_before=(1, 200), new_tip='never' )
     p300.drop_tip()
 
     # transfer mastermix to plate
     mm_vol = mm_dict['volume']
     pick_up(m20)
+    m20.mix(5, mm_vol, mm_strip[0], 3)
     m20.transfer(mm_vol, mm_strip[0].bottom(0.5), sample_dests,
                  new_tip='never')
     m20.drop_tip()
