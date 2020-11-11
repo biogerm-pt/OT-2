@@ -37,7 +37,7 @@ def run(ctx: protocol_api.ProtocolContext):
         'mastermix strips')
     
     #TEMPERATURE
-    tempdeck.set_temperature(4)
+    tempdeck.set_temperature(8)
 
 
     tube_block = ctx.load_labware(
