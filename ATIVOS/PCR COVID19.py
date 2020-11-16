@@ -117,10 +117,10 @@ resuming.')
     def mix_up_down(reps, vol, loc, pip):
         for _ in range(reps):
             pip.aspirate(vol, loc.bottom(5))
-            #pip.dispense(vol, loc.bottom(loc._depth/2))
-            pip.dispense(vol, loc.bottom(20), 3)
-            pip.aspirate(vol, loc.bottom(20))
-            pip.dispense(vol, loc.bottom(5), 2)
+            pip.dispense(vol, loc.bottom(loc._depth/2), 3)
+            #pip.dispense(vol, loc.top(), 3)
+            pip.aspirate(vol, loc.bottom(5))
+            pip.dispense(vol, loc.top())
 
     if PREPARE_MASTERMIX:
         vol_overage = 1.1 if NUM_SAMPLES > 48 else 1.04
