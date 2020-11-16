@@ -11,7 +11,7 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 66 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
+NUM_SAMPLES = 8 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
 ELUTION_VOL = 50
 STARTING_VOL = 540
 WASH_VOL = 500
@@ -51,10 +51,10 @@ def run(ctx):
     # load labware and pipettes
     num_cols = math.ceil(NUM_SAMPLES/8)
     tips300 = [ctx.load_labware('starlab_96_tiprack_300ul', slot, '200µl filtertiprack')
-               for slot in ['3', '6', '8', '9', '7']]
+               for slot in ['3', '6', '8', '9']] #7  _____________________________
     if PARK:
         parkingrack = ctx.load_labware(
-            'starlab_96_tiprack_300ul', '10', 'empty tiprack for parking')
+            'starlab_96_tiprack_300ul', '7', 'empty tiprack for parking') #10 ____________________
         if POOL:
             parking_spots = parkingrack.rows()[0]
         else:
@@ -265,7 +265,7 @@ resuming.')
         magdeck.engage(height=magheight)
         ctx.delay(minutes=5, msg='Incubating on MagDeck for 5 minutes.')
 
-        remove_supernatant(wash_vol_rem+40, park=park) #+40
+        remove_supernatant(wash_vol_rem, park=park)
 
     def wash_etoh(wash_etoh_vol, source_etoh, mix_reps_etoh, park=True):
         magdeck.disengage()
@@ -296,7 +296,7 @@ resuming.')
         magdeck.engage(height=magheight)
         ctx.delay(minutes=5, msg='Incubating on MagDeck for 5 minutes.')
 
-        remove_supernatant(wash_etoh_vol+40, park=park) #+40
+        remove_supernatant(wash_etoh_vol, park=park)
 
 
 
@@ -318,11 +318,11 @@ resuming.')
             else:
                 drop(m300)
 
-        ctx.delay(minutes=5, msg='Incubating off magnet at room temperature \
-for 5 minutes')  #2________________________
+        ctx.delay(minutes=2, msg='Incubating off magnet at room temperature \
+for 2 minutes')
         magdeck.engage(height=magheight)
-        ctx.delay(minutes=5, msg='Incubating on magnet at room temperature \
-for 5 minutes')  #2________________________
+        ctx.delay(minutes=2, msg='Incubating on magnet at room temperature \
+for 2 minutes')
 
         for m, e, spot in zip(mag_samples_m, elution_samples_m, parking_spots):
             if park:
@@ -338,7 +338,7 @@ for 5 minutes')  #2________________________
             m300.drop_tip()
 
     magdeck.engage(height=magheight)
-    ctx.delay(minutes=5, msg='Incubating on MagDeck for 5 minutes.')
+    ctx.delay(minutes=1, msg='Incubating on MagDeck for 1 minutes.') #5  _________________________
 
     # remove initial supernatant
 
