@@ -69,7 +69,7 @@ def run(ctx):
 
     magdeck = ctx.load_module('magnetic module gen2', '4')
     magdeck.disengage()
-    magheight = 6
+    magheight = 6.5
     magplate = magdeck.load_labware('nest_96_wellplate_2ml_deep')
     # magplate = magdeck.load_labware('biorad_96_wellplate_200ul_pcr')
     tempdeck = ctx.load_module('Temperature Module Gen2', '1')
@@ -201,39 +201,6 @@ resuming.')
             drop(m300)
         m300.flow_rate.aspirate = 50  # mudei de 150
 
-    # def bind(vol, park=True):
-    #     # add bead binding buffer and mix samples
-    #     for i, (well, spot) in enumerate(zip(mag_samples_m, parking_spots)):
-    #         source = binding_buffer[i//(12//len(binding_buffer))]
-    #         if park:
-    #             pick_up(m300, spot)
-    #         else:
-    #             pick_up(m300)
-    #         for _ in range(5):
-    #             m300.aspirate(180, source.bottom(0.5))
-    #             m300.dispense(180, source.bottom(5))
-    #         num_trans = math.ceil(vol/210)
-    #         vol_per_trans = vol/num_trans
-    #         for t in range(num_trans):
-    #             if m300.current_volume > 0:
-    #                 m300.dispense(m300.current_volume, source.top())  # void air gap if necessary
-    #             m300.transfer(vol_per_trans, source, well.top(), air_gap=20,
-    #                           new_tip='never')
-    #             if t == 0:
-    #                 m300.air_gap(20)
-    #         m300.mix(5, 200, well)
-    #         m300.blow_out(well.top(-2))
-    #         m300.air_gap(20)
-    #         if park:
-    #             m300.drop_tip(spot)
-    #         else:
-    #             drop(m300)
-    #
-    #     magdeck.engage(height=magheight)
-    #     ctx.delay(minutes=2, msg='Incubating on MagDeck for 2 minutes.')
-    #
-    #     # remove initial supernatant
-    #     remove_supernatant(vol+STARTING_VOL, park=park)
 
     def wash(wash_vol, source, mix_reps, park=True):
         magdeck.disengage()
@@ -319,10 +286,10 @@ resuming.')
                 drop(m300)
 
         ctx.delay(minutes=5, msg='Incubating off magnet at room temperature \
-for 5 minutes')  #2________________________
+for 5 minutes')  
         magdeck.engage(height=magheight)
         ctx.delay(minutes=5, msg='Incubating on magnet at room temperature \
-for 5 minutes')  #2________________________
+for 5 minutes')  
 
         for m, e, spot in zip(mag_samples_m, elution_samples_m, parking_spots):
             if park:
