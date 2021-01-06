@@ -11,14 +11,13 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 77 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
+NUM_SAMPLES = 24 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
 ELUTION_VOL = 50
 STARTING_VOL = 540
 WASH_VOL = 500
 POOL = False
 TIP_TRACK = False
 PARK = True
-LOCBOTTOM = 1.5
 
 # Definitions for deck light flashing
 class CancellationToken:
@@ -190,7 +189,7 @@ resuming.')
                 pick_up(m300)
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = 1 if side_ind % 2 == 0 else -1
-            loc = m.bottom(LOCBOTTOM).move(Point(x=side*2.5)) # mudei de LOCBOTTOM  3>2.5
+            loc = m.bottom(1.2).move(Point(x=side*2.5)) # mudei de 0.5>0.8  2.5>2  ++++++++++
             for _ in range(num_trans):
                 waste_track(vol_per_trans)
                 if m300.current_volume > 0:
@@ -214,7 +213,7 @@ resuming.')
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = -1 if side_ind % 2 == 0 else 1
             pick_up(m300)
-            loc = m.bottom(LOCBOTTOM).move(Point(x=side*2.5)) # mudei de LOCBOTTOM  3>2.5
+            loc = m.bottom(0.8).move(Point(x=side*2.5)) # mudei de 0.5>0.8  3>2.5
             src = source[i//(12//len(source))]
             for n in range(num_trans):
                 if m300.current_volume > 0:
@@ -245,7 +244,7 @@ resuming.')
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = -1 if side_ind % 2 == 0 else 1
             pick_up(m300)
-            loc = m.bottom(LOCBOTTOM - 0).move(Point(x=side*2.5)) # mudei de LOCBOTTOM - "valor"  3>2.5
+            loc = m.bottom(0.5).move(Point(x=side*2.5)) # mudei de 0.5  3>2.5
             src = source_etoh[i//(12//len(source_etoh))]
             for n in range(num_trans):
                 if m300.current_volume > 0:
@@ -275,7 +274,7 @@ resuming.')
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = -1 if side_ind % 2 == 0 else 1
             pick_up(m300)
-            loc = m.bottom(LOCBOTTOM).move(Point(x=side*2.5)) # mudei de LOCBOTTOM  3>2.5
+            loc = m.bottom(0.8).move(Point(x=side*2.5)) # mudei de 0.5>0.8  3>2.5
             m300.aspirate(vol, elution_solution)
             m300.move_to(m.center())
             m300.dispense(vol, loc)
@@ -287,10 +286,10 @@ resuming.')
             else:
                 drop(m300)
 
-        ctx.delay(minutes=5, msg='Incubating off magnet at room temperature \
+        ctx.delay(minutes=0.5, msg='Incubating off magnet at room temperature \
 for 5 minutes')  
         magdeck.engage(height=magheight)
-        ctx.delay(minutes=5, msg='Incubating on magnet at room temperature \
+        ctx.delay(minutes=0.5, msg='Incubating on magnet at room temperature \
 for 5 minutes')  
 
         for m, e, spot in zip(mag_samples_m, elution_samples_m, parking_spots):
@@ -300,14 +299,14 @@ for 5 minutes')
                 pick_up(m300)
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = 1 if side_ind % 2 == 0 else -1
-            loc = m.bottom(LOCBOTTOM).move(Point(x=side*2.5))  # mudei de LOCBOTTOM  3>2.5
+            loc = m.bottom(0.8).move(Point(x=side*2.5))  # mudei de 0.5>0.8  3>2.5
             m300.transfer(40, loc, e.bottom(5), air_gap=20, new_tip='never')
             m300.blow_out(e.top(-2))
             m300.air_gap(20)
             m300.drop_tip()
 
     magdeck.engage(height=magheight)
-    ctx.delay(minutes=5, msg='Incubating on MagDeck for 5 minutes.')
+    ctx.delay(minutes=0.5, msg='Incubating on MagDeck for 5 minutes.')
 
     # remove initial supernatant
 
@@ -319,7 +318,7 @@ for 5 minutes')
     wash_etoh(WASH_VOL, etoh, 15, park=PARK)
 
     magdeck.disengage()
-    ctx.delay(minutes=5, msg='Airdrying beads at room temperature for 5 \
+    ctx.delay(minutes=0.5, msg='Airdrying beads at room temperature for 5 \
 minutes.')
     m300.flow_rate.aspirate = 50
     elute(ELUTION_VOL, park=PARK)
