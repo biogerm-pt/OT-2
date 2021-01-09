@@ -11,14 +11,14 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 8 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
+NUM_SAMPLES = 96 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
 ELUTION_VOL = 50
 STARTING_VOL = 540
 WASH_VOL = 500
 POOL = False
 TIP_TRACK = False
 PARK = True
-LOCBOTTOM = 0.2
+LOCBOTTOM = 0.4
 
 # Definitions for deck light flashing
 class CancellationToken:
