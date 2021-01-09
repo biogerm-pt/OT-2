@@ -18,7 +18,8 @@ WASH_VOL = 500
 POOL = False
 TIP_TRACK = False
 PARK = True
-LOCBOTTOM = 0.4
+LOCBOTTOM = 0.8
+SIDEBOTTOM = 0.5
 
 # Definitions for deck light flashing
 class CancellationToken:
@@ -190,7 +191,7 @@ resuming.')
                 pick_up(m300)
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = 1 if side_ind % 2 == 0 else -1
-            loc = m.bottom(LOCBOTTOM).move(Point(x=side*0)) # mudei de LOCBOTTOM  3>2.5
+            loc = m.bottom(LOCBOTTOM).move(Point(x=side*SIDEBOTTOM)) # mudei de LOCBOTTOM  3>2.5
             for _ in range(num_trans):
                 waste_track(vol_per_trans)
                 if m300.current_volume > 0:
@@ -214,7 +215,7 @@ resuming.')
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = -1 if side_ind % 2 == 0 else 1
             pick_up(m300)
-            loc = m.bottom(LOCBOTTOM).move(Point(x=side*0)) # mudei de LOCBOTTOM  3>2.5
+            loc = m.bottom(LOCBOTTOM).move(Point(x=side*SIDEBOTTOM)) # mudei de LOCBOTTOM  3>2.5
             src = source[i//(12//len(source))]
             for n in range(num_trans):
                 if m300.current_volume > 0:
@@ -245,7 +246,7 @@ resuming.')
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = -1 if side_ind % 2 == 0 else 1
             pick_up(m300)
-            loc = m.bottom(LOCBOTTOM - 0).move(Point(x=side*0)) # mudei de LOCBOTTOM - "valor"  3>2.5
+            loc = m.bottom(LOCBOTTOM - 0).move(Point(x=side*SIDEBOTTOM)) # mudei de LOCBOTTOM - "valor"  3>2.5
             src = source_etoh[i//(12//len(source_etoh))]
             for n in range(num_trans):
                 if m300.current_volume > 0:
@@ -275,7 +276,7 @@ resuming.')
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = -1 if side_ind % 2 == 0 else 1
             pick_up(m300)
-            loc = m.bottom(LOCBOTTOM).move(Point(x=side*0)) # mudei de LOCBOTTOM  3>2.5
+            loc = m.bottom(LOCBOTTOM).move(Point(x=side*SIDEBOTTOM)) # mudei de LOCBOTTOM  3>2.5
             m300.aspirate(vol, elution_solution)
             m300.move_to(m.center())
             m300.dispense(vol, loc)
@@ -300,7 +301,7 @@ for 5 minutes')
                 pick_up(m300)
             side_ind = int(m.display_name.split(' ')[0][1:])
             side = 1 if side_ind % 2 == 0 else -1
-            loc = m.bottom(LOCBOTTOM).move(Point(x=side*0))  # mudei de LOCBOTTOM  3>2.5
+            loc = m.bottom(LOCBOTTOM).move(Point(x=side*SIDEBOTTOM))  # mudei de LOCBOTTOM  3>2.5
             m300.transfer(40, loc, e.bottom(5), air_gap=20, new_tip='never')
             m300.blow_out(e.top(-2))
             m300.air_gap(20)
