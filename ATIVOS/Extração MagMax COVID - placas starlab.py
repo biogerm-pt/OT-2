@@ -18,7 +18,7 @@ WASH_VOL = 500
 POOL = False
 TIP_TRACK = False
 PARK = True
-LOCBOTTOM = 0.9
+LOCBOTTOM = 1.7
 SIDEBOTTOM = 2
 
 # Definitions for deck light flashing
@@ -233,7 +233,7 @@ resuming.')
                 drop(m300)
 
         magdeck.engage(height=magheight)
-        ctx.delay(minutes=5, msg='Incubating on MagDeck for 5 minutes.')
+        ctx.delay(minutes=9, msg='Incubating on MagDeck for 9 minutes.')
 
         remove_supernatant(wash_vol_rem+40, park=park) #+40
 
@@ -264,7 +264,7 @@ resuming.')
                 drop(m300)
 
         magdeck.engage(height=magheight)
-        ctx.delay(minutes=5, msg='Incubating on MagDeck for 5 minutes.')
+        ctx.delay(minutes=9, msg='Incubating on MagDeck for 9 minutes.')
 
         remove_supernatant(wash_etoh_vol+40, park=park) #+40
 
@@ -288,11 +288,11 @@ resuming.')
             else:
                 drop(m300)
 
-        ctx.delay(minutes=5, msg='Incubating off magnet at room temperature \
-for 5 minutes')  
+        ctx.delay(minutes=9, msg='Incubating off magnet at room temperature \
+for 9 minutes')  
         magdeck.engage(height=magheight)
-        ctx.delay(minutes=5, msg='Incubating on magnet at room temperature \
-for 5 minutes')  
+        ctx.delay(minutes=9, msg='Incubating on magnet at room temperature \
+for 9 minutes')  
 
         for m, e, spot in zip(mag_samples_m, elution_samples_m, parking_spots):
             if park:
@@ -308,7 +308,7 @@ for 5 minutes')
             m300.drop_tip()
 
     magdeck.engage(height=magheight)
-    ctx.delay(minutes=5, msg='Incubating on MagDeck for 5 minutes.')
+    ctx.delay(minutes=9, msg='Incubating on MagDeck for 9 minutes.')
 
     # remove initial supernatant
 
