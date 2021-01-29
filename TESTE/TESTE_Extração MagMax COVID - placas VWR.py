@@ -11,15 +11,23 @@ metadata = {
     'apiLevel': '2.3'
 }
 
-NUM_SAMPLES = 8 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
+NUM_SAMPLES = 40 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
+
+
+#NÃO MEXER
 ELUTION_VOL = 50
 STARTING_VOL = 540
 WASH_VOL = 500
 POOL = False
 TIP_TRACK = False
 PARK = True
-LOCBOTTOM = 1.7
-SIDEBOTTOM = 0
+LOCBOTTOM = 0.5
+SIDEBOTTOM = 0.3
+INCUBATION_TIME = 9
+DRY_TIME = 5
+MAGHEIGHT = 4.75
+#NÃO MEXER
+
 
 # Definitions for deck light flashing
 class CancellationToken:
@@ -71,7 +79,7 @@ def run(ctx):
 
     magdeck = ctx.load_module('magnetic module gen2', '4')
     magdeck.disengage()
-    magheight = 6.2
+    magheight = MAGHEIGHT
     #magplate
     magplate = magdeck.load_labware('vwr_96_wellplate_2000ul')
     #magplate
@@ -233,7 +241,7 @@ resuming.')
                 drop(m300)
 
         magdeck.engage(height=magheight)
-        ctx.delay(minutes=9, msg='Incubating on MagDeck for 9 minutes.')
+        ctx.delay(minutes=INCUBATION_TIME, msg='Incubating on MagDeck for 9 minutes.')
 
         remove_supernatant(wash_vol_rem+40, park=park) #+40
 
@@ -264,7 +272,7 @@ resuming.')
                 drop(m300)
 
         magdeck.engage(height=magheight)
-        ctx.delay(minutes=9, msg='Incubating on MagDeck for 9 minutes.')
+        ctx.delay(minutes=INCUBATION_TIME, msg='Incubating on MagDeck for 9 minutes.')
 
         remove_supernatant(wash_etoh_vol+40, park=park) #+40
 
@@ -288,10 +296,10 @@ resuming.')
             else:
                 drop(m300)
 
-        ctx.delay(minutes=9, msg='Incubating off magnet at room temperature \
+        ctx.delay(minutes=INCUBATION_TIME, msg='Incubating off magnet at room temperature \
 for 9 minutes')  
         magdeck.engage(height=magheight)
-        ctx.delay(minutes=9, msg='Incubating on magnet at room temperature \
+        ctx.delay(minutes=INCUBATION_TIME, msg='Incubating on magnet at room temperature \
 for 9 minutes')  
 
         for m, e, spot in zip(mag_samples_m, elution_samples_m, parking_spots):
@@ -308,19 +316,18 @@ for 9 minutes')
             m300.drop_tip()
 
     magdeck.engage(height=magheight)
-    ctx.delay(minutes=9, msg='Incubating on MagDeck for 9 minutes.')
+    ctx.delay(minutes=INCUBATION_TIME, msg='Incubating on MagDeck for 9 minutes.')
 
     # remove initial supernatant
 
     m300.flow_rate.aspirate = 50
     remove_supernatant(STARTING_VOL, park=PARK)
     wash(WASH_VOL, wash1, 15, park=PARK)
-    #m300.flow_rate.aspirate = 94
     wash_etoh(WASH_VOL, etoh, 15, park=PARK)
     wash_etoh(WASH_VOL, etoh, 15, park=PARK)
 
     magdeck.disengage()
-    ctx.delay(minutes=5, msg='Airdrying beads at room temperature for 5 \
+    ctx.delay(minutes=DRY_TIME, msg='Airdrying beads at room temperature for 5 \
 minutes.')
     m300.flow_rate.aspirate = 50
     elute(ELUTION_VOL, park=PARK)
