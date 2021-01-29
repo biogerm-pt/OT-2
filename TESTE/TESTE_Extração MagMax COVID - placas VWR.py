@@ -6,12 +6,14 @@ import threading
 from time import sleep
 
 metadata = {
-    'protocolName': 'USO_v6_station_b_M300_Pool_magmax',
+    'protocolName': 'V1_Extração MagMax COVID - placas VWR',
+    'adapted by': 'Ricardo Magalhães',
     'author': 'Nick <ndiehl@opentrons.com',
     'apiLevel': '2.3'
 }
 
 NUM_SAMPLES = 40 # start with 8 samples, slowly increase to 48, then 94 (max is 64)
+
 
 
 #NÃO MEXER
