@@ -162,7 +162,7 @@ resuming.')
         else:
             vol = (num_cols-1)*mm_dict['volume']*((vol_overage-1)/2+1)
         p300.flow_rate.aspirate = 15
-        p300.transfer(vol, mm_tube.bottom(1.5), well, new_tip='never')
+        p300.transfer(vol, mm_tube.bottom(1), well, new_tip='never')
     p300.drop_tip()
 
     # transfer mastermix to plate
@@ -176,8 +176,8 @@ resuming.')
     # transfer samples to corresponding locations
     for s, d in zip(sources, sample_dests):
         pick_up(m20)
-        m20.transfer(SAMPLE_VOL, s.bottom(2), d.bottom(2), new_tip='never')
-        m20.mix(1, 10, d.bottom(2))
+        m20.transfer(SAMPLE_VOL, s.bottom(1), d.bottom(1), new_tip='never')
+        m20.mix(1, 10, d.bottom(1))
         m20.blow_out(d.top(-2))
         m20.aspirate(5, d.top(2))  # suck in any remaining droplets on way to trash
         m20.drop_tip()
